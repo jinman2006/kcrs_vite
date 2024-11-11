@@ -2,6 +2,13 @@
   import { reactive, ref } from "vue"
   import user from '@/api/user.js'
   import md5 from "md5";
+  import { ElMessage } from "element-plus";
+  import { useUserStore } from "@/store/user";
+  import { useRouter } from "vue-router";
+
+  //   初始化
+  const userStore = useUserStore()
+  const router = useRouter()
 
   const formData = reactive({
     username:'',
@@ -27,6 +34,22 @@
         }
         user.login(formData.username,md5(formData.password))
         .then(res => {
+            if(res.success){
+                ElMessage.success(res.message)
+                // 将token后面的过期时间单独提取出来
+                let resToken = res.data.token
+                let expireTime = resToken.split('.')[2]
+                
+                // 用户状态存储至pinia与localstorage
+                userStore.save(formData.username,resToken,expireTime)
+                
+                // 跳转到后台首页
+                router.push("/admin")
+
+                console.log('time',expireTime)
+            }else{
+                ElMessage.error(res.message)
+            }
             console.log('login res',res)
         }).catch(err => {
             console.log('login err',err)

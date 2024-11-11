@@ -1,0 +1,52 @@
+.home-container {
+    min-height: 100%;
+    width: 100%;
+    background-color: #e9e7e7;
+    overflow: hidden;
+    display: flex;
+
+    .sidebar {
+        width: 200px;
+        background-color: rgb(163, 196, 163);
+
+        .logo-container {
+            height: 55px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+
+            .logo {
+                width: 55px;
+                height: 45px;
+                // padding: 0 10px;
+                padding-left: 20px;
+
+                .el-avatar {
+                    background-color: transparent; //透明
+                }
+            }
+
+            .logo-text {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                height: 100%;
+            }
+        }
+    }
+
+    .main {
+        height: 100%;
+        width: calc(100vw - 200px);
+
+        .header {
+            height: 55px;
+
+        }
+
+        .content {
+
+            height: calc(100vh - 55px);
+        }
+    }
+}
