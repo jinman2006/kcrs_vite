@@ -1,26 +1,29 @@
 .home-container {
     min-height: 100%;
     width: 100%;
-    background-color: #e9e7e7;
+    background-color: #e4e4e7;
     overflow: hidden;
     display: flex;
 
     .sidebar {
         width: 200px;
-        background-color: rgb(163, 196, 163);
+        background-color: #fff;
+        border-right: 1px solid #d1d3d6;
+        // border-right: 1px solid red;
 
         .logo-container {
-            height: 55px;
+            height: 50px;
             width: 100%;
             display: flex;
             align-items: center;
 
             .logo {
-                width: 55px;
+                width: 30px;
                 height: 45px;
                 // padding: 0 10px;
-                padding-left: 20px;
-
+                padding-left: 15px;
+                display: flex;
+                align-items: center;
                 .el-avatar {
                     background-color: transparent; //透明
                 }
@@ -30,9 +33,17 @@
                 flex: 1;
                 display: flex;
                 align-items: center;
-                height: 100%;
+
             }
         }
+        .menu-container{
+            padding-top: 5px;
+            overflow: hidden;
+            :deep(.el-menu){
+                border-right: 0px;
+            }
+        }
+
     }
 
     .main {
@@ -40,13 +51,55 @@
         width: calc(100vw - 200px);
 
         .header {
-            height: 55px;
-
+            height: 50px;
+            border-bottom: 1px solid #d1d3d6;
+            box-sizing: border-box;
+            background-color: #fff;
+            display: flex;
+            .header-left{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 40px;
+            }
+            .header-middle{
+                flex: 1;
+            }
+            .header-right{
+                min-width: 200px;
+                display: flex;
+                justify-content: right;
+                align-items: center;
+                padding-right: 20px;
+                // background-color: red;
+                // .el-avatar {
+                //     background-color: transparent; //透明
+                // }
+            }
         }
 
         .content {
-
-            height: calc(100vh - 55px);
+            width: calc(100vw - 220px);//多减20防止margin撑大
+            height: calc(100vh - 70px);
+            // background-color: #fff;
+            margin: 10px;
+            // border-radius: 10px;
+            .query{
+                height: 60px;
+                width: 100%;
+                background-color: #fff;
+                border-radius: 10px 10px 0 0;
+                margin-bottom: 10px;
+            }
+            .table{
+                height: calc(100% - 70px);
+                width: 100%;
+                background-color: #fff;
+                border-radius: 0 0 10px 10px;
+                display: flex;
+                justify-content: center;
+                padding: 10px 0;
+            }
         }
     }
 }
