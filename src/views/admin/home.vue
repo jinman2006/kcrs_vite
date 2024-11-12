@@ -1,10 +1,13 @@
 <script setup>
-import { ref } from 'vue'
+
 
 // 使用本地图片的导入方法
 import logoImg from '@/assets/img/logo.png'
 
 import SidebarMenu from '@/components/SidebarMenu.vue';
+import TableList from '@/components/TableList.vue';
+
+
 
 </script>
 
@@ -27,7 +30,7 @@ import SidebarMenu from '@/components/SidebarMenu.vue';
       <div class="main">
          <div class="header">
             <div class="header-left">
-               <el-icon :size="30" color="#515151"><Fold /></el-icon>
+               <el-icon :size="22" color="#515151"><Fold /></el-icon>
             </div>
             <div class="header-middle"></div>
             <div class="header-right">
@@ -36,23 +39,7 @@ import SidebarMenu from '@/components/SidebarMenu.vue';
          </div>
          <div class="content">
             <div class="query"></div>
-            <div class="table">
-               <el-table border style="width: 98%;">
-                  <el-table-colunm prop="area" label="区域"></el-table-colunm>
-                  <el-table-colunm prop="name" label="名称"></el-table-colunm>
-                  <el-table-colunm prop="contact" label="联系人"></el-table-colunm>
-                  <el-table-colunm prop="phone" label="电话"></el-table-colunm>
-                  <el-table-colunm prop="position" label="职位"></el-table-colunm>
-                  <el-table-colunm prop="models" label="机型"></el-table-colunm>
-                  <el-table-colunm prop="address" label="地址"></el-table-colunm>
-                  <el-table-colunm  label="操作" fixed="right">
-                     <template #default>
-                        <el-button link type="primary" size="small">详情</el-button>
-                        <el-button link type="primary" size="small">审核</el-button>
-                     </template>
-                  </el-table-colunm>
-               </el-table>
-            </div>
+            <table-list></table-list>
          </div>
       </div>
 

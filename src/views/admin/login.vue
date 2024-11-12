@@ -11,8 +11,8 @@
   const router = useRouter()
 
   const formData = reactive({
-    username:'',
-    password:''
+    username:'super-admin',
+    password:'123456'
   })
 
   const rules = {

@@ -24,6 +24,7 @@
                 padding-left: 15px;
                 display: flex;
                 align-items: center;
+
                 .el-avatar {
                     background-color: transparent; //透明
                 }
@@ -36,10 +37,12 @@
 
             }
         }
-        .menu-container{
+
+        .menu-container {
             padding-top: 5px;
             overflow: hidden;
-            :deep(.el-menu){
+
+            :deep(.el-menu) {
                 border-right: 0px;
             }
         }
@@ -56,16 +59,19 @@
             box-sizing: border-box;
             background-color: #fff;
             display: flex;
-            .header-left{
+
+            .header-left {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 width: 40px;
             }
-            .header-middle{
+
+            .header-middle {
                 flex: 1;
             }
-            .header-right{
+
+            .header-right {
                 min-width: 200px;
                 display: flex;
                 justify-content: right;
@@ -79,27 +85,21 @@
         }
 
         .content {
-            width: calc(100vw - 220px);//多减20防止margin撑大
+            width: calc(100vw - 220px); //多减20防止margin撑大
             height: calc(100vh - 70px);
             // background-color: #fff;
             margin: 10px;
+
             // border-radius: 10px;
-            .query{
+            .query {
                 height: 60px;
                 width: 100%;
                 background-color: #fff;
                 border-radius: 10px 10px 0 0;
                 margin-bottom: 10px;
             }
-            .table{
-                height: calc(100% - 70px);
-                width: 100%;
-                background-color: #fff;
-                border-radius: 0 0 10px 10px;
-                display: flex;
-                justify-content: center;
-                padding: 10px 0;
-            }
+
+
         }
     }
 }
