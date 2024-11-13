@@ -1,6 +1,7 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import  customer from '@/api/customer.js'
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 
 // 数据
@@ -16,12 +17,18 @@ customer.getCustomerData().then( res => {
 // 对话框
 const isShow = ref(false)
 const dialogData = ref()
+// const isPassBtn = ref()
 
-const detail = (row) => {
-    isShow.value = true
-    dialogData.value = row
-    console.log('row',row)
-}
+// let isPassBtn = computed(() => {
+//     // if(dialogData.value.status === 'passed' || dialogData.value.status)return 'disabled'
+//     if('passed failed'.indexOf(dialogData.value.status) > 0)return 'disabled'
+// },{ immediate: true }
+// )
+
+// const test = () => {
+//     console.log('passed failed'.indexOf(dialogData.value.status))
+// }
+
 
 //单击名称弹出详情对话页
 const cellClick = (row, column, cell, event) => {
@@ -32,6 +39,8 @@ const cellClick = (row, column, cell, event) => {
 }
 
 
+
+
 // 鼠标移入名称单元格，鼠标样式更改为手指开关
 const mousePointer = (row, column, rowIndex, columnIndex) => {
     // if(row.column.property === 'name')return "cursor:pointer;"
@@ -39,6 +48,76 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
         return {"cursor": 'pointer',"color":'rgb(51.2, 126.4, 204)',"font-weight":'bolder'}
         // rgb(51.2, 126.4, 204)
     }
+}
+
+
+// 审批操作
+const passClick = (row) => {
+    // 已经审批通过或驳回的，避免二次操作
+    if('passed failed'.indexOf(row.status) !== -1){
+        ElMessage.error('已审批，请勿重复操作')
+        return 
+    }
+    ElMessageBox.confirm(
+        '确认通过这条信息吗？',
+        '操作提醒',
+        {
+            confirmButtonText:'确认通过',
+            cancelButtonText:'取消操作',
+            type: 'warning'
+        }
+    ).then(() => {
+        
+        // console.log('dialogdata',firstReportingData.value)
+        
+        customer.approveCustomer(row.id, 'passed').then((res) => {
+            if(res.success){
+                ElMessage.success(res.message)
+             
+                row.status='passed'
+            }else{
+                ElMessage.error(res.message)
+                return
+            }
+        }).catch(err => {
+            ElMessage.error(err)
+            // console.log('tablelist err',err)
+        })
+    }).catch(() => {
+        console.log('取消')
+    })
+}
+
+const rejectClick = (row) => {
+    // 已经审批通过或驳回的，避免二次操作
+    if('passed failed'.indexOf(row.status) !== -1){
+        ElMessage.error('已审批，请勿重复操作')
+        return 
+    }
+    ElMessageBox.prompt(
+        '请输入驳回的原因',
+        '驳回原因',
+        {
+            confirmButtonText:'确认驳回',
+            cancelButtonText:'取消操作',
+            inputPattern:/^.+$/,
+            inputErrorMessage:'原因不能为空'
+        }
+    ).then(({value}) => {
+        console.log('value',value)
+        customer.approveCustomer(row.id, 'failed', value).then((res) => {
+            if(res.success){
+                ElMessage.success(res.message)
+                row.status='failed'
+            }else{
+                ElMessage.error(res.message)
+                return
+            }
+        }).catch(err => {
+            ElMessage.error(err)
+            // console.log('tablelist err',err)
+        })        
+    })    
 }
 </script>
 
@@ -58,15 +137,25 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
           <el-table-column prop="position" label="职位" />
           <el-table-column prop="models" label="机型" />
           <el-table-column prop="addr" label="地址" show-overflow-tooltip />
+          <el-table-column prop="status" label="状态">
+
+            <!-- 状态以标签显示的这种方式，修改时会有明显动作，再没有找到合适解决办法前选用v-if -->
+            <template #default="{row}">
+              <el-tag v-if="row.status === 'pending'">待审核</el-tag>
+              <el-tag type="success" v-else-if="row.status === 'passed'">已通过</el-tag>
+              <el-tag type="danger" v-else>已驳回</el-tag>        
+            </template>
+
+          </el-table-column>
           <el-table-column  label="快捷操作" fixed="right">
              <template #default="{row}">
-                <el-button link type="primary" size="small">通过</el-button>
-                <el-button link type="primary" size="small">驳回</el-button>
+                <el-button link type="primary" size="small" @click="passClick(row)">通过</el-button>
+                <el-button link type="primary" size="small" @click="rejectClick(row)">驳回</el-button>
              </template>
           </el-table-column>
        </el-table>
     </div>
-    <el-dialog v-model="isShow">
+    <el-dialog v-model="isShow" width='60%'>
         <el-descriptions
             :column="2"
             border
@@ -108,10 +197,36 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
                 {{ dialogData.addr }}
             </el-descriptions-item>
         </el-descriptions>
+
+        <el-descriptions
+        class="margin-top"
+        direction="vertical"
+        :column="2"
+        border
+        >
+            <el-descriptions-item :span="2">
+                    <template #label>备注</template>
+                    {{ dialogData.contact }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+                    <template #label>状态</template>
+                    <!-- 这个显示方式，参照前面，后面有更好方法时，会更改 -->
+                    <el-tag v-if="dialogData.status === 'pending'">待审核</el-tag>
+                    <el-tag type="success" v-else-if="dialogData.status === 'passed'">已通过</el-tag>
+                    <el-tag type="danger" v-else>已驳回</el-tag>                       
+                  
+            </el-descriptions-item>
+            <el-descriptions-item v-if="dialogData.status === 'failed'">
+                    <template #label>驳回原因</template>                  
+                    {{ dialogData.reject_reason }}
+            </el-descriptions-item>
+
+        </el-descriptions>
         <div class="btn_group">
-            <el-button type="success">通过</el-button>
-            <el-button type="danger">驳回</el-button>
-            <el-button type="info">结案</el-button>
+            <el-button type="success"  @click="passClick(dialogData)">通过</el-button>
+            <el-button type="danger"  @click="rejectClick(dialogData)">驳回</el-button>
+            <el-button type="primary">结案</el-button>
+            <el-button type="info" @click="test">重置</el-button>
         </div>
 
     </el-dialog>
@@ -145,5 +260,8 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
     display: flex;
     // justify-content: flex-end;
     margin-top: 20px;
+ }
+ .margin-top{
+    margin-top: 10px;
  }
 </style>

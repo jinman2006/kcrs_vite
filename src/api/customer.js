@@ -7,6 +7,13 @@ const customer = {
             // method: 'POST',
             // data:{}
         })
+    },
+    approveCustomer(id, result, reason = '') {
+        return request({
+            url: '/api/customer/approve/',
+            method: 'POST',
+            data: { id, result, reason }
+        })
     }
 }
 
