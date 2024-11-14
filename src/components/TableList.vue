@@ -119,6 +119,37 @@ const rejectClick = (row) => {
         })        
     })    
 }
+
+const resetStatus = (row) => {
+    // 已经审批通过或驳回的，避免二次操作
+    if('pending'.indexOf(row.status) !== -1){
+        ElMessage.error('初始状态，无法重置')
+        return 
+    }  
+    ElMessageBox.confirm(
+        '重置后，本条将回到待审核状态，确认重置这条信息吗？',
+        '操作提醒',
+        {
+            confirmButtonText:'确认重置',
+            cancelButtonText:'取消操作',
+            type: 'warning'
+        }
+    ).then(() => {
+        customer.resetStatus(row.id).then( res => {
+            console.log('rest res',res)
+            if(res.success){
+                ElMessage.success(res.message)
+                row.status='pending'
+            }else{
+                ElMessage.error(res.message)
+                return
+            }
+        })
+    }).catch( err => {
+        // console.log('rest err',err)
+        ElMessage.error(err)
+    }) 
+}
 </script>
 
 <template>
@@ -137,7 +168,7 @@ const rejectClick = (row) => {
           <el-table-column prop="position" label="职位" />
           <el-table-column prop="models" label="机型" />
           <el-table-column prop="addr" label="地址" show-overflow-tooltip />
-          <el-table-column prop="status" label="状态">
+          <el-table-column prop="status" label="状态" >
 
             <!-- 状态以标签显示的这种方式，修改时会有明显动作，再没有找到合适解决办法前选用v-if -->
             <template #default="{row}">
@@ -147,7 +178,7 @@ const rejectClick = (row) => {
             </template>
 
           </el-table-column>
-          <el-table-column  label="快捷操作" fixed="right">
+          <el-table-column  label="快捷操作" fixed="right" min-width="100">
              <template #default="{row}">
                 <el-button link type="primary" size="small" @click="passClick(row)">通过</el-button>
                 <el-button link type="primary" size="small" @click="rejectClick(row)">驳回</el-button>
@@ -226,7 +257,7 @@ const rejectClick = (row) => {
             <el-button type="success"  @click="passClick(dialogData)">通过</el-button>
             <el-button type="danger"  @click="rejectClick(dialogData)">驳回</el-button>
             <el-button type="primary">结案</el-button>
-            <el-button type="info" @click="test">重置</el-button>
+            <el-button type="info" @click="resetStatus(dialogData)">重置</el-button>
         </div>
 
     </el-dialog>

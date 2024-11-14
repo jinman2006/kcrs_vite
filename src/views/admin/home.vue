@@ -6,6 +6,7 @@ import logoImg from '@/assets/img/logo.png'
 
 import SidebarMenu from '@/components/SidebarMenu.vue';
 import TableList from '@/components/TableList.vue';
+import SearchBar from '@/components/SearchBar.vue';
 
 
 
@@ -38,7 +39,8 @@ import TableList from '@/components/TableList.vue';
             </div>
          </div>
          <div class="content">
-            <div class="query"></div>
+            <!-- <div class="query"></div> -->
+             <search-bar></search-bar>
             <table-list></table-list>
          </div>
       </div>
