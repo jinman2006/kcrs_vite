@@ -5,6 +5,11 @@ import 'element-plus/theme-chalk/display.css'
 
 const searchFormData = ref([])
 
+const searchComb = reactive({
+    content:'',
+    condition:''
+})
+
 const isExpand = ref(false)
 const searchBarHeight = ref('60px')
 
@@ -28,50 +33,25 @@ const expandToggle = () => {
 <template>
    <div class="search-container" >
     <div class="form">
-        <el-form :inline="true" :model="searchFormData">
-            <el-row>
-                <el-col :span="8" :xs="12">
-                    <el-form-item label="名称">
-                       <el-input style="min-width: 240px;"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="8" :xs="12">
-                    <el-form-item label="电话">
-                        <el-input style="min-width: 240px;"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="8" :xs="12" v-show="isExpand">
-                    <el-form-item label="地址" >
-                         <el-input style="min-width: 240px;" ></el-input>
-                    </el-form-item>                    
-                </el-col>
-                <el-col :span="8" :xs="12" class="btn" v-show="!isExpand">
-                    <el-form-item >
-                        <el-button type="primary">查询</el-button>
-                        <span class="expand" @click="expandToggle">
-                            展开
-                            <el-icon><ArrowDownBold /></el-icon>
-                        </span>
-                    </el-form-item>
-                </el-col>
+        <el-form :inline="true" :model="searchComb">
+            <el-form-item prop="searchContent" label="搜索的内容">
+                <el-input></el-input>
+            </el-form-item>
+            <el-form-item label="条件">
+                <el-select
+                    v-model="searchComb.condition"
+                    placeholder="选择搜索的条件"
+                    clearable
+                >
+                    <el-option label="名称" value="ccompany" />
+                    <el-option label="别名" value="cacompany" />
+                    <el-option label="电话" value="ctel" />
+                </el-select>
+            </el-form-item>
 
-            </el-row>
-            <el-row v-show="isExpand" style="margin-top: 20px;">
-                <el-col :span="8"></el-col>
-                <el-col :span="8"></el-col>
-                <el-col :span="8" class="btn" >
-                    <el-form-item >
-                        <el-button type="primary">查询</el-button>
-                        <span class="expand" @click="expandToggle">
-                            收起
-                            <el-icon><ArrowUpBold /></el-icon>
-                        </span>
-                    </el-form-item>                    
-                </el-col>
-            </el-row>
-
-
-
+            <el-form-item>
+                <el-button type="primary">搜索</el-button>
+            </el-form-item>
         </el-form>
     </div>
 
@@ -89,9 +69,13 @@ const expandToggle = () => {
     align-items: center;
     .form{
         overflow: hidden;
-        width: 100%;
+   
         .el-form-item{
             margin: 0 20px;
+
+        }
+        .el-select{
+            --el-select-width: 220px;
         }
         .btn{
             display: flex;

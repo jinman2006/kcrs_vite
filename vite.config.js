@@ -10,18 +10,18 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src')
     }
   },
-  css:{
+  css: {
     preprocessorOptions: {
       scss: {
         api: 'modern-compiler' //修改API调用方式
       }
     }
   },
-  server:{
-    proxy:{
-      '/api':{
-        target:'http://127.0.0.1',
-        changeOrigin:true
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://api.extroncnc.cn',
+        changeOrigin: true
 
       }
     }

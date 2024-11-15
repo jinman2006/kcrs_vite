@@ -1,7 +1,7 @@
 <script setup>
   import { reactive, ref } from "vue"
   import user from '@/api/user.js'
-  import md5 from "md5";
+  import sha1 from "sha1";
   import { ElMessage } from "element-plus";
   import { useUserStore } from "@/store/user";
   import { useRouter } from "vue-router";
@@ -11,8 +11,8 @@
   const router = useRouter()
 
   const formData = reactive({
-    username:'super-admin',
-    password:'123456'
+    username:'admin',
+    password:'3588823'
   })
 
   const rules = {
@@ -32,7 +32,7 @@
         if(!valid){ //验证失败
             return 
         }
-        user.login(formData.username,md5(formData.password))
+        user.login(formData.username,sha1(formData.password))
         .then(res => {
             if(res.success){
                 ElMessage.success(res.message)

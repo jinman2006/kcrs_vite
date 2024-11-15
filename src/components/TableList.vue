@@ -1,7 +1,7 @@
 <script setup>
 import { computed, reactive, ref } from 'vue'
 import  customer from '@/api/customer.js'
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage, ElMessageBox} from 'element-plus';
 
 
 // 数据
@@ -17,22 +17,10 @@ customer.getCustomerData().then( res => {
 // 对话框
 const isShow = ref(false)
 const dialogData = ref()
-// const isPassBtn = ref()
-
-// let isPassBtn = computed(() => {
-//     // if(dialogData.value.status === 'passed' || dialogData.value.status)return 'disabled'
-//     if('passed failed'.indexOf(dialogData.value.status) > 0)return 'disabled'
-// },{ immediate: true }
-// )
-
-// const test = () => {
-//     console.log('passed failed'.indexOf(dialogData.value.status))
-// }
-
 
 //单击名称弹出详情对话页
 const cellClick = (row, column, cell, event) => {
-    if(column.property !== 'name') return
+    if(column.property !== 'ccompany') return
     isShow.value = true
     dialogData.value = row
     // console.log('row',row)
@@ -44,7 +32,7 @@ const cellClick = (row, column, cell, event) => {
 // 鼠标移入名称单元格，鼠标样式更改为手指开关
 const mousePointer = (row, column, rowIndex, columnIndex) => {
     // if(row.column.property === 'name')return "cursor:pointer;"
-    if(row.column.property == 'name'){
+    if(row.column.property == 'ccompany'){
         return {"cursor": 'pointer',"color":'rgb(51.2, 126.4, 204)',"font-weight":'bolder'}
         // rgb(51.2, 126.4, 204)
     }
@@ -150,6 +138,25 @@ const resetStatus = (row) => {
         ElMessage.error(err)
     }) 
 }
+
+// 分页
+const currentPage1 = ref(5)
+const currentPage2 = ref(5)
+const currentPage3 = ref(5)
+const currentPage4 = ref(4)
+const pageSize2 = ref(100)
+const pageSize3 = ref(100)
+const pageSize4 = ref(100)
+const size = ref('default')
+const background = ref(false)
+const disabled = ref(false)
+
+const handleSizeChange = (val) => {
+  console.log(`${val} items per page`)
+}
+const handleCurrentChange = (val) => {
+  console.log(`current page: ${val}`)
+}
 </script>
 
 <template>
@@ -161,19 +168,19 @@ const resetStatus = (row) => {
             @cell-click="cellClick"
             :cell-style = "mousePointer"
         >
-          <el-table-column prop="area" label="区域" show-overflow-tooltip/>
-          <el-table-column prop="name" label="名称" show-overflow-tooltip />
-          <el-table-column prop="contact" label="联系人" />
-          <el-table-column prop="phone" label="电话" />
-          <el-table-column prop="position" label="职位" />
-          <el-table-column prop="models" label="机型" />
-          <el-table-column prop="addr" label="地址" show-overflow-tooltip />
+          <el-table-column prop="provinces" width="60" label="区域" show-overflow-tooltip/>
+          <el-table-column prop="ccompany" min-width="150" label="名称" show-overflow-tooltip />
+          <el-table-column prop="ccontact" label="联系人" />
+          <el-table-column prop="ctel" label="电话" />
+          <el-table-column prop="cdept" label="职位" width="80" show-overflow-tooltip/>
+          <el-table-column prop="cmodel" label="机型" show-overflow-tooltip />
+          <!-- <el-table-column prop="caddress" label="地址" show-overflow-tooltip /> -->
           <el-table-column prop="status" label="状态" >
 
             <!-- 状态以标签显示的这种方式，修改时会有明显动作，再没有找到合适解决办法前选用v-if -->
             <template #default="{row}">
-              <el-tag v-if="row.status === 'pending'">待审核</el-tag>
-              <el-tag type="success" v-else-if="row.status === 'passed'">已通过</el-tag>
+              <el-tag v-if="row.status === '0'">待审核</el-tag>
+              <el-tag type="success" v-else-if="row.status === '1'">已通过</el-tag>
               <el-tag type="danger" v-else>已驳回</el-tag>        
             </template>
 
@@ -185,7 +192,25 @@ const resetStatus = (row) => {
              </template>
           </el-table-column>
        </el-table>
+       <div class="pagination-container">
+            <el-pagination
+                v-model:current-page="currentPage4"
+                v-model:page-size="pageSize4"
+                :page-sizes="[100, 200, 300, 400]"
+                :size="size"
+                :disabled="disabled"
+                :background="background"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="400"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+            />
+        </div>      
     </div>
+
+
+
+
     <el-dialog v-model="isShow" width='60%'>
         <el-descriptions
             :column="2"
@@ -193,39 +218,39 @@ const resetStatus = (row) => {
         >
             <el-descriptions-item :span="2">
                 <template #label>区域</template>
-                {{ dialogData.area }}
+                {{ dialogData.provinces }}
             </el-descriptions-item>
             <el-descriptions-item :span="2">
                 <template #label>客户名称</template>
-                {{ dialogData.name }}
+                {{ dialogData.ccompany }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template #label>别名</template>
-                {{ dialogData.aliasname }}
+                {{ dialogData.cacompany }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template #label>机型</template>
-                {{ dialogData.models }}
+                {{ dialogData.cmodel }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template #label>联系人</template>
-                {{ dialogData.contact }}
+                {{ dialogData.ccontact }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template #label>电话</template>
-                {{ dialogData.phone }}
+                {{ dialogData.ctel }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template #label>职位</template>
-                {{ dialogData.position }}
+                {{ dialogData.cdept }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template #label>报备时间</template>
-                {{ dialogData.create_time }}
+                {{ dialogData.date2 }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template #label>地址</template>
-                {{ dialogData.addr }}
+                {{ dialogData.caddresss }}
             </el-descriptions-item>
         </el-descriptions>
 
@@ -242,14 +267,14 @@ const resetStatus = (row) => {
             <el-descriptions-item>
                     <template #label>状态</template>
                     <!-- 这个显示方式，参照前面，后面有更好方法时，会更改 -->
-                    <el-tag v-if="dialogData.status === 'pending'">待审核</el-tag>
-                    <el-tag type="success" v-else-if="dialogData.status === 'passed'">已通过</el-tag>
+                    <el-tag v-if="dialogData.status === '0'">待审核</el-tag>
+                    <el-tag type="success" v-else-if="dialogData.status === '1'">已通过</el-tag>
                     <el-tag type="danger" v-else>已驳回</el-tag>                       
                   
             </el-descriptions-item>
-            <el-descriptions-item v-if="dialogData.status === 'failed'">
+            <el-descriptions-item v-if="dialogData.status === '2'">
                     <template #label>驳回原因</template>                  
-                    {{ dialogData.reject_reason }}
+                    {{ dialogData.nopass_reason }}
             </el-descriptions-item>
 
         </el-descriptions>
@@ -286,6 +311,14 @@ const resetStatus = (row) => {
          justify-content: flex-start;
          align-items: center;
      }
+     .pagination-container{
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 10px;
+        padding-left: 20px;
+        
+       
+     }
  }
  .btn_group{
     display: flex;
@@ -295,4 +328,5 @@ const resetStatus = (row) => {
  .margin-top{
     margin-top: 10px;
  }
+
 </style>

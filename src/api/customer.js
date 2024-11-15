@@ -3,7 +3,7 @@ import request from '@/utils/request'
 const customer = {
     getCustomerData() {
         return request({
-            url: '/api/customer/getlist/',
+            url: '/api/customer/getlist.php',
             // method: 'POST',
             // data:{}
         })
