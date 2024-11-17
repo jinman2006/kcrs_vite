@@ -8,7 +8,14 @@ const routes = [
     },
     {
         path: '/admin',
-        component: () => import('@/views/admin/home.vue')
+        component: () => import('@/views/admin/home.vue'),
+        children: [
+            // 报备管理
+            {
+                path: '/customer/firstlist',
+                component: () => import("@/views/admin/firstList.vue")
+            }
+        ]
     }
 ]
 

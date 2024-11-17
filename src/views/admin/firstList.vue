@@ -1,22 +1,50 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue';
+import 'element-plus/theme-chalk/display.css'
 import  customer from '@/api/customer.js'
-import { ElMessage, ElMessageBox} from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
+// 搜索数据
+const searchComb = reactive({
+    content:'',
+    condition:''
+})
+const searchBarHeight = ref('60px')
+const searchFormRef = ref()
 
-// 数据
+// 列表数据
 const firstReportingData = ref([])
 
-customer.getCustomerData().then( res => {
-   console.log('home',res.data)
-   firstReportingData.value = res.data
-}).catch( err => {
-   console.log('home', err)
-})
+// 分页数据
+const currentPage = ref(1)
+const pageSize = ref(10)
+const size = ref('default')
+const background = ref(false)
+const disabled = ref(false)
+const total = ref(0)
 
 // 对话框
 const isShow = ref(false)
 const dialogData = ref()
+
+// 搜索验证规则
+const searchRules = {
+    content:[
+        {required: true, message: '请输入搜索内容', trigger: 'blur'}
+    ],
+    condition:[
+        {required: true, message:'请选择搜索条件', trigger:'change'}
+    ]
+}
+
+// 获取客户数据
+customer.getCustomerData(currentPage.value, pageSize.value).then( res => {
+   console.log('home',res.data)
+   firstReportingData.value = res.data
+   total.value = res.total
+}).catch( err => {
+   console.log('home', err)
+})
 
 //单击名称弹出详情对话页
 const cellClick = (row, column, cell, event) => {
@@ -25,10 +53,6 @@ const cellClick = (row, column, cell, event) => {
     dialogData.value = row
     // console.log('row',row)
 }
-
-
-
-
 // 鼠标移入名称单元格，鼠标样式更改为手指开关
 const mousePointer = (row, column, rowIndex, columnIndex) => {
     // if(row.column.property === 'name')return "cursor:pointer;"
@@ -38,11 +62,10 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
     }
 }
 
-
 // 审批操作
 const passClick = (row) => {
     // 已经审批通过或驳回的，避免二次操作
-    if('passed failed'.indexOf(row.status) !== -1){
+    if('-1 2-'.indexOf(row.status) !== -1){
         ElMessage.error('已审批，请勿重复操作')
         return 
     }
@@ -78,7 +101,7 @@ const passClick = (row) => {
 
 const rejectClick = (row) => {
     // 已经审批通过或驳回的，避免二次操作
-    if('passed failed'.indexOf(row.status) !== -1){
+    if('-1 2-'.indexOf(row.status) !== -1){
         ElMessage.error('已审批，请勿重复操作')
         return 
     }
@@ -110,7 +133,7 @@ const rejectClick = (row) => {
 
 const resetStatus = (row) => {
     // 已经审批通过或驳回的，避免二次操作
-    if('pending'.indexOf(row.status) !== -1){
+    if('-0-'.indexOf(row.status) !== -1){
         ElMessage.error('初始状态，无法重置')
         return 
     }  
@@ -139,28 +162,71 @@ const resetStatus = (row) => {
     }) 
 }
 
-// 分页
-const currentPage1 = ref(5)
-const currentPage2 = ref(5)
-const currentPage3 = ref(5)
-const currentPage4 = ref(4)
-const pageSize2 = ref(100)
-const pageSize3 = ref(100)
-const pageSize4 = ref(100)
-const size = ref('default')
-const background = ref(false)
-const disabled = ref(false)
-
+// 修改分页大小
 const handleSizeChange = (val) => {
   console.log(`${val} items per page`)
+  pageSize.value = val
+  currentPage.value = 1
+  customer.getCustomerData(currentPage.value, val).then( res => {
+   firstReportingData.value = res.data
+    }).catch( err => {
+        console.log('home', err)
+    }) 
 }
+// 分页，更改当前页
 const handleCurrentChange = (val) => {
   console.log(`current page: ${val}`)
+  customer.getCustomerData(val, pageSize.value).then( res => {
+   firstReportingData.value = res.data
+    }).catch( err => {
+        console.log('home', err)
+    })  
+}
+
+
+const handleSearch = () => {
+    searchFormRef.value.validate((valid,field) => {
+        console.log(valid,field)
+        if(!valid){
+            ElMessage.error('搜索信息不完整')
+        }
+    })
+
 }
 </script>
 
 <template>
-    <div class="_table">
+   <div class="search-container" >
+        <div class="form">
+            <el-form 
+            :inline="true" 
+            :model="searchComb" 
+            ref="searchFormRef" 
+            :rules="searchRules"
+            hide-required-asterisk
+            >
+                <el-form-item prop="content" label="搜索的内容" >
+                    <el-input v-model="searchComb.content"></el-input>
+                </el-form-item>
+                <el-form-item label="条件" prop="condition">
+                    <el-select
+                        v-model="searchComb.condition"
+                        placeholder="选择搜索的条件"
+                        clearable
+                    >
+                        <el-option label="名称" value="ccompany" />
+                        <el-option label="别名" value="cacompany" />
+                        <el-option label="电话" value="ctel" />
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type="primary" @click="handleSearch">搜索</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+   </div>
+   <div class="_table">
        <el-table 
             :data="firstReportingData" 
             border 
@@ -194,14 +260,14 @@ const handleCurrentChange = (val) => {
        </el-table>
        <div class="pagination-container">
             <el-pagination
-                v-model:current-page="currentPage4"
-                v-model:page-size="pageSize4"
-                :page-sizes="[100, 200, 300, 400]"
+                v-model:current-page="currentPage"
+                v-model:page-size="pageSize"
+                :page-sizes="[5, 10, 20, 30]"
                 :size="size"
                 :disabled="disabled"
                 :background="background"
                 layout="total, sizes, prev, pager, next, jumper"
-                :total="400"
+                :total="total"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
             />
@@ -260,10 +326,6 @@ const handleCurrentChange = (val) => {
         :column="2"
         border
         >
-            <el-descriptions-item :span="2">
-                    <template #label>备注</template>
-                    {{ dialogData.contact }}
-            </el-descriptions-item>
             <el-descriptions-item>
                     <template #label>状态</template>
                     <!-- 这个显示方式，参照前面，后面有更好方法时，会更改 -->
@@ -286,47 +348,12 @@ const handleCurrentChange = (val) => {
         </div>
 
     </el-dialog>
-    
+       
 </template>
 
 <style lang="scss" scoped>
-._table {
-     height: calc(100% - 70px);
-     width: 100%;
-     background-color: #fff;
-     border-radius: 0 0 10px 10px;
-     display: flex;
-     flex-direction: column;
-     // justify-content: center;
-     align-items: center;
-     margin: 0 auto;
-     padding: 20px 0;
-     .btn {
-         height: 50px;
-         width: 100%;
-         display: flex;
-         box-sizing: border-box;
-         // margin-left: 10px;
-         padding-left: 20px;
-         justify-content: flex-start;
-         align-items: center;
-     }
-     .pagination-container{
-        box-sizing: border-box;
-        width: 100%;
-        margin-top: 10px;
-        padding-left: 20px;
-        
-       
-     }
- }
- .btn_group{
-    display: flex;
-    // justify-content: flex-end;
-    margin-top: 20px;
- }
- .margin-top{
-    margin-top: 10px;
- }
-
+@use "@/styles/admin/customer.scss";
+.search-container {
+    height: v-bind(searchBarHeight);
+}
 </style>
