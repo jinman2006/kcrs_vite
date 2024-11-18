@@ -16,7 +16,7 @@
           </template>
 
           <el-menu-item index="/customer/firstlist">初报查询</el-menu-item>
-          <el-menu-item index="1-2">续报查询</el-menu-item>
+          <el-menu-item index="/customer/renewallist">续报查询</el-menu-item>
           <el-menu-item index="1-3">结案查询</el-menu-item>
        </el-sub-menu>
        <el-menu-item>

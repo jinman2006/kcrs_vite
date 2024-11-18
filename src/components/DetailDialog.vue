@@ -4,13 +4,17 @@ const props = defineProps({
     dialogData:{
         type: Object,
         required: true
+    },
+    isShow:{
+        type: Boolean,
+        required: true
     }
 })
 </script>
 
 <template>
    <div class="">
-        <el-dialog v-model="isShow" width='60%'>
+        <el-dialog v-model="props.isShow" width='60%'>
             <el-descriptions
                 :column="2"
                 border

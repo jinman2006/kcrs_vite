@@ -19,16 +19,11 @@ const firstReportingData = ref([])
 // 分页数据
 const currentPage = ref(1)
 const pageSize = ref(10)
-// const size = ref('default')
-// const background = ref(false)
-// const disabled = ref(false)
 const total = ref(0)
 
 const paginationShow = ref(true)
 
-// // 对话框
-// const isShow = ref(false)
-// const dialogData = ref()
+
 
 // 搜索验证规则
 const searchRules = {
@@ -49,21 +44,6 @@ customer.getCustomerData(currentPage.value, pageSize.value).then( res => {
    console.log('home', err)
 })
 
-// //单击名称弹出详情对话页
-// const cellClick = (row, column, cell, event) => {
-//     if(column.property !== 'ccompany') return
-//     isShow.value = true
-//     dialogData.value = row
-//     // console.log('row',row)
-// }
-// // 鼠标移入名称单元格，鼠标样式更改为手指开关
-// const mousePointer = (row, column, rowIndex, columnIndex) => {
-//     // if(row.column.property === 'name')return "cursor:pointer;"
-//     if(row.column.property == 'ccompany'){
-//         return {"cursor": 'pointer',"color":'rgb(51.2, 126.4, 204)',"font-weight":'bolder'}
-//         // rgb(51.2, 126.4, 204)
-//     }
-// }
 
 // 审批操作
 const passClick = (row) => {
@@ -241,6 +221,9 @@ const handleSearch = () => {
    :total="total"
    :currentPage="currentPage"
    :pageSize="pageSize"
+   @passClick="passClick"
+   @rejectClick="rejectClick"
+   @resetStatus="resetStatus"
    ></table-list>
     <!--<div class="_table">
        <el-table 
