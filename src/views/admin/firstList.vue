@@ -1,8 +1,9 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import 'element-plus/theme-chalk/display.css'
 import  customer from '@/api/customer.js'
 import { ElMessage, ElMessageBox } from 'element-plus';
+import TableList from '@/components/TableList.vue';
 
 // 搜索数据
 const searchComb = reactive({
@@ -18,14 +19,16 @@ const firstReportingData = ref([])
 // 分页数据
 const currentPage = ref(1)
 const pageSize = ref(10)
-const size = ref('default')
-const background = ref(false)
-const disabled = ref(false)
+// const size = ref('default')
+// const background = ref(false)
+// const disabled = ref(false)
 const total = ref(0)
 
-// 对话框
-const isShow = ref(false)
-const dialogData = ref()
+const paginationShow = ref(true)
+
+// // 对话框
+// const isShow = ref(false)
+// const dialogData = ref()
 
 // 搜索验证规则
 const searchRules = {
@@ -46,21 +49,21 @@ customer.getCustomerData(currentPage.value, pageSize.value).then( res => {
    console.log('home', err)
 })
 
-//单击名称弹出详情对话页
-const cellClick = (row, column, cell, event) => {
-    if(column.property !== 'ccompany') return
-    isShow.value = true
-    dialogData.value = row
-    // console.log('row',row)
-}
-// 鼠标移入名称单元格，鼠标样式更改为手指开关
-const mousePointer = (row, column, rowIndex, columnIndex) => {
-    // if(row.column.property === 'name')return "cursor:pointer;"
-    if(row.column.property == 'ccompany'){
-        return {"cursor": 'pointer',"color":'rgb(51.2, 126.4, 204)',"font-weight":'bolder'}
-        // rgb(51.2, 126.4, 204)
-    }
-}
+// //单击名称弹出详情对话页
+// const cellClick = (row, column, cell, event) => {
+//     if(column.property !== 'ccompany') return
+//     isShow.value = true
+//     dialogData.value = row
+//     // console.log('row',row)
+// }
+// // 鼠标移入名称单元格，鼠标样式更改为手指开关
+// const mousePointer = (row, column, rowIndex, columnIndex) => {
+//     // if(row.column.property === 'name')return "cursor:pointer;"
+//     if(row.column.property == 'ccompany'){
+//         return {"cursor": 'pointer',"color":'rgb(51.2, 126.4, 204)',"font-weight":'bolder'}
+//         // rgb(51.2, 126.4, 204)
+//     }
+// }
 
 // 审批操作
 const passClick = (row) => {
@@ -162,26 +165,26 @@ const resetStatus = (row) => {
     }) 
 }
 
-// 修改分页大小
-const handleSizeChange = (val) => {
-  console.log(`${val} items per page`)
-  pageSize.value = val
-  currentPage.value = 1
-  customer.getCustomerData(currentPage.value, val).then( res => {
-   firstReportingData.value = res.data
-    }).catch( err => {
-        console.log('home', err)
-    }) 
-}
-// 分页，更改当前页
-const handleCurrentChange = (val) => {
-  console.log(`current page: ${val}`)
-  customer.getCustomerData(val, pageSize.value).then( res => {
-   firstReportingData.value = res.data
-    }).catch( err => {
-        console.log('home', err)
-    })  
-}
+// // 修改分页大小
+// const handleSizeChange = (val) => {
+//   console.log(`${val} items per page`)
+//   pageSize.value = val
+//   currentPage.value = 1
+//   customer.getCustomerData(currentPage.value, val).then( res => {
+//    firstReportingData.value = res.data
+//     }).catch( err => {
+//         console.log('home', err)
+//     }) 
+// }
+// // 分页，更改当前页
+// const handleCurrentChange = (val) => {
+//   console.log(`current page: ${val}`)
+//   customer.getCustomerData(val, pageSize.value).then( res => {
+//    firstReportingData.value = res.data
+//     }).catch( err => {
+//         console.log('home', err)
+//     })  
+// }
 
 
 const handleSearch = () => {
@@ -190,6 +193,14 @@ const handleSearch = () => {
         if(!valid){
             ElMessage.error('搜索信息不完整')
         }
+        customer.search(searchComb.content,searchComb.condition)
+        .then(res => {
+            paginationShow.value = false
+            console.log('firstlist res', res)
+            firstReportingData.value = res.data
+        }).catch( err => {
+            console.log('firstlist err', err)
+        })
     })
 
 }
@@ -215,8 +226,6 @@ const handleSearch = () => {
                         clearable
                     >
                         <el-option label="名称" value="ccompany" />
-                        <el-option label="别名" value="cacompany" />
-                        <el-option label="电话" value="ctel" />
                     </el-select>
                 </el-form-item>
 
@@ -226,7 +235,14 @@ const handleSearch = () => {
             </el-form>
         </div>
    </div>
-   <div class="_table">
+   <table-list 
+   :firstReportingData ="firstReportingData" 
+   :paginationShow="paginationShow"
+   :total="total"
+   :currentPage="currentPage"
+   :pageSize="pageSize"
+   ></table-list>
+    <!--<div class="_table">
        <el-table 
             :data="firstReportingData" 
             border 
@@ -237,13 +253,13 @@ const handleSearch = () => {
           <el-table-column prop="provinces" width="60" label="区域" show-overflow-tooltip/>
           <el-table-column prop="ccompany" min-width="150" label="名称" show-overflow-tooltip />
           <el-table-column prop="ccontact" label="联系人" />
-          <el-table-column prop="ctel" label="电话" />
+          <el-table-column prop="ctel" label="电话" show-overflow-tooltip />
           <el-table-column prop="cdept" label="职位" width="80" show-overflow-tooltip/>
           <el-table-column prop="cmodel" label="机型" show-overflow-tooltip />
-          <!-- <el-table-column prop="caddress" label="地址" show-overflow-tooltip /> -->
+          
           <el-table-column prop="status" label="状态" >
 
-            <!-- 状态以标签显示的这种方式，修改时会有明显动作，再没有找到合适解决办法前选用v-if -->
+             状态以标签显示的这种方式，修改时会有明显动作，再没有找到合适解决办法前选用v-if 
             <template #default="{row}">
               <el-tag v-if="row.status === '0'">待审核</el-tag>
               <el-tag type="success" v-else-if="row.status === '1'">已通过</el-tag>
@@ -258,7 +274,7 @@ const handleSearch = () => {
              </template>
           </el-table-column>
        </el-table>
-       <div class="pagination-container">
+       <div class="pagination-container" v-show="paginationShow">
             <el-pagination
                 v-model:current-page="currentPage"
                 v-model:page-size="pageSize"
@@ -272,12 +288,12 @@ const handleSearch = () => {
                 @current-change="handleCurrentChange"
             />
         </div>      
-    </div>
+    </div> -->
 
 
 
 
-    <el-dialog v-model="isShow" width='60%'>
+    <!-- <el-dialog v-model="isShow" width='60%'>
         <el-descriptions
             :column="2"
             border
@@ -328,7 +344,7 @@ const handleSearch = () => {
         >
             <el-descriptions-item>
                     <template #label>状态</template>
-                    <!-- 这个显示方式，参照前面，后面有更好方法时，会更改 -->
+                     这个显示方式，参照前面，后面有更好方法时，会更改 
                     <el-tag v-if="dialogData.status === '0'">待审核</el-tag>
                     <el-tag type="success" v-else-if="dialogData.status === '1'">已通过</el-tag>
                     <el-tag type="danger" v-else>已驳回</el-tag>                       
@@ -347,7 +363,7 @@ const handleSearch = () => {
             <el-button type="info" @click="resetStatus(dialogData)">重置</el-button>
         </div>
 
-    </el-dialog>
+    </el-dialog> -->
        
 </template>
 
