@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps } from 'vue'
+import { ref, provide, inject } from 'vue'
 import DetailDialog from './DetailDialog.vue';
 
 const props = defineProps({
@@ -14,27 +14,39 @@ const props = defineProps({
     total:{
         type:Number,
         required:true
-    },
-    currentPage:{
-        type:Number,
-        required:true
-    },
-    pageSize:{
-        type: Number,
-        required:true
     }
 })
+
+const emit = defineEmits(['passClick', 'rejectClick', 'resetStatus', 'handleSizeChange', 'handleCurrentChange'])
+function passClick(){
+    emit('passClick', dialogData.value)
+}
+function rejectClick(){
+    emit('rejectClick', dialogData.value)
+}
+function resetStatus(){
+    emit('resetStatus', dialogData.value)
+}
+function handleCurrentChange( val){
+    emit('handleCurrentChange', val)
+}
+function handleSizeChange(val){
+    emit('handleSizeChange',val)
+}
 
 // 分页数据
 
 const size = ref('default')
 const background = ref(false)
 const disabled = ref(false)
-
+const { currentPage, pageSize } = inject('pagination')
 
 // 对话框
 const isShow = ref(false)
 const dialogData = ref([])
+provide('isShow',{
+    isShow
+})
 
 //单击名称弹出详情对话页
 const cellClick = (row, column, cell, event) => {
@@ -52,26 +64,26 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
     }
 }
 
-// 修改分页大小
-const handleSizeChange = (val) => {
-  console.log(`${val} items per page`)
-  pageSize.value = val
-  currentPage.value = 1
-  customer.getCustomerData(currentPage.value, val).then( res => {
-   firstReportingData.value = res.data
-    }).catch( err => {
-        console.log('home', err)
-    }) 
-}
-// 分页，更改当前页
-const handleCurrentChange = (val) => {
-  console.log(`current page: ${val}`)
-  customer.getCustomerData(val, pageSize.value).then( res => {
-   firstReportingData.value = res.data
-    }).catch( err => {
-        console.log('home', err)
-    })  
-}
+// // 修改分页大小
+// const handleSizeChange = (val) => {
+//   console.log(`${val} items per page`)
+//   pageSize.value = val
+//   currentPage.value = 1
+//   customer.getCustomerData(currentPage.value, val).then( res => {
+//    firstReportingData.value = res.data
+//     }).catch( err => {
+//         console.log('home', err)
+//     }) 
+// }
+// // 分页，更改当前页
+// const handleCurrentChange = (val) => {
+//   console.log(`current page: ${val}`)
+//   customer.getCustomerData(val, pageSize.value).then( res => {
+//    firstReportingData.value = res.data
+//     }).catch( err => {
+//         console.log('home', err)
+//     })  
+// }
 </script>
 
 <template>
@@ -109,8 +121,8 @@ const handleCurrentChange = (val) => {
        </el-table>
        <div class="pagination-container" v-show="paginationShow">
             <el-pagination
-                v-model:current-page="props.currentPage"
-                v-model:page-size="props.pageSize"
+                v-model:current-page="currentPage"
+                v-model:page-size="pageSize"
                 :page-sizes="[5, 10, 20, 30]"
                 :size="size"
                 :disabled="disabled"
@@ -125,6 +137,9 @@ const handleCurrentChange = (val) => {
     <detail-dialog
     :dialogData="dialogData"
     :isShow="isShow"
+    @passClick="passClick"
+    @rejectClick="rejectClick"
+    @resetStatus="resetStatus"
     ></detail-dialog>
 </template>
 

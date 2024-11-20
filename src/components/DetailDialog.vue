@@ -1,20 +1,34 @@
 <script setup>
+import { inject } from 'vue';
 
 const props = defineProps({
     dialogData:{
         type: Object,
         required: true
     },
-    isShow:{
-        type: Boolean,
-        required: true
-    }
+    // isShow:{
+    //     type: Boolean,
+    //     required: true
+    // }
 })
+
+const { isShow } = inject('isShow')
+
+const emit = defineEmits(['passClick', 'rejectClick', 'resetStatus'])
+function passClick(){
+    emit('passClick', props.dialogData.value)
+}
+function rejectClick(){
+    emit('rejectClick', props.dialogData.value)
+}
+function resetStatus(){
+    emit('resetStatus', props.dialogData.value)
+}
 </script>
 
 <template>
    <div class="">
-        <el-dialog v-model="props.isShow" width='60%'>
+        <el-dialog v-model="isShow" width='60%'>
             <el-descriptions
                 :column="2"
                 border

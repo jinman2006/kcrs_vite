@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref } from 'vue';
+import { provide, reactive, ref } from 'vue';
 import 'element-plus/theme-chalk/display.css'
 import  customer from '@/api/customer.js'
 import { ElMessage, ElMessageBox } from 'element-plus';
@@ -20,6 +20,13 @@ const firstReportingData = ref([])
 const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
+
+
+
+provide('pagination',{
+    currentPage,
+    pageSize
+})
 
 const paginationShow = ref(true)
 
@@ -145,26 +152,26 @@ const resetStatus = (row) => {
     }) 
 }
 
-// // 修改分页大小
-// const handleSizeChange = (val) => {
-//   console.log(`${val} items per page`)
-//   pageSize.value = val
-//   currentPage.value = 1
-//   customer.getCustomerData(currentPage.value, val).then( res => {
-//    firstReportingData.value = res.data
-//     }).catch( err => {
-//         console.log('home', err)
-//     }) 
-// }
-// // 分页，更改当前页
-// const handleCurrentChange = (val) => {
-//   console.log(`current page: ${val}`)
-//   customer.getCustomerData(val, pageSize.value).then( res => {
-//    firstReportingData.value = res.data
-//     }).catch( err => {
-//         console.log('home', err)
-//     })  
-// }
+// 修改分页大小
+const handleSizeChange = (val) => {
+  console.log(`${val} items per page`)
+  pageSize.value = val
+  currentPage.value = 1
+  customer.getCustomerData(currentPage.value, val).then( res => {
+   firstReportingData.value = res.data
+    }).catch( err => {
+        console.log('home', err)
+    }) 
+}
+// 分页，更改当前页
+const handleCurrentChange = (val) => {
+  console.log(`current page: ${val}`)
+  customer.getCustomerData(val, pageSize.value).then( res => {
+   firstReportingData.value = res.data
+    }).catch( err => {
+        console.log('home', err)
+    })  
+}
 
 
 const handleSearch = () => {
@@ -219,11 +226,11 @@ const handleSearch = () => {
    :firstReportingData ="firstReportingData" 
    :paginationShow="paginationShow"
    :total="total"
-   :currentPage="currentPage"
-   :pageSize="pageSize"
    @passClick="passClick"
    @rejectClick="rejectClick"
    @resetStatus="resetStatus"
+   @handleSizeChange="handleSizeChange"
+   @handleCurrentChange="handleCurrentChange"
    ></table-list>
     <!--<div class="_table">
        <el-table 
