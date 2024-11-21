@@ -82,14 +82,21 @@ function resetStatus(){
                         <!-- 这个显示方式，参照前面，后面有更好方法时，会更改 -->
                         <el-tag v-if="dialogData.status === '0'">待审核</el-tag>
                         <el-tag type="success" v-else-if="dialogData.status === '1'">已通过</el-tag>
-                        <el-tag type="danger" v-else>已驳回</el-tag>                       
+                        <el-tag type="danger" v-else-if="dialogData.status === '2'">已驳回</el-tag>
+                        <el-tag  v-else-if="dialogData.status === '3'">待续审</el-tag>
+                        <el-tag type="success" v-else-if="dialogData.status === '4'">已续期</el-tag>
+                        <el-tag type="danger" v-else-if="dialogData.status === '5'">续驳回</el-tag>
+                        <el-tag type="info" v-else>已结案</el-tag>                       
                     
                 </el-descriptions-item>
                 <el-descriptions-item v-if="dialogData.status === '2'">
                         <template #label>驳回原因</template>                  
                         {{ dialogData.nopass_reason }}
                 </el-descriptions-item>
-
+                <el-descriptions-item v-else-if="dialogData.status === '9'">
+                        <template #label>结案原因</template>                  
+                        {{ dialogData.close_out }}
+                </el-descriptions-item>
             </el-descriptions>
             <div class="btn_group">
                 <el-button type="success"  @click="passClick(dialogData)">通过</el-button>

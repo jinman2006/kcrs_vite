@@ -64,26 +64,6 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
     }
 }
 
-// // 修改分页大小
-// const handleSizeChange = (val) => {
-//   console.log(`${val} items per page`)
-//   pageSize.value = val
-//   currentPage.value = 1
-//   customer.getCustomerData(currentPage.value, val).then( res => {
-//    firstReportingData.value = res.data
-//     }).catch( err => {
-//         console.log('home', err)
-//     }) 
-// }
-// // 分页，更改当前页
-// const handleCurrentChange = (val) => {
-//   console.log(`current page: ${val}`)
-//   customer.getCustomerData(val, pageSize.value).then( res => {
-//    firstReportingData.value = res.data
-//     }).catch( err => {
-//         console.log('home', err)
-//     })  
-// }
 </script>
 
 <template>
@@ -108,7 +88,11 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
             <template #default="{row}">
               <el-tag v-if="row.status === '0'">待审核</el-tag>
               <el-tag type="success" v-else-if="row.status === '1'">已通过</el-tag>
-              <el-tag type="danger" v-else>已驳回</el-tag>        
+              <el-tag type="danger" v-else-if="row.status === '2'">已驳回</el-tag>
+              <el-tag  v-else-if="row.status === '3'">待续审</el-tag>
+              <el-tag type="success" v-else-if="row.status === '4'">已续期</el-tag>
+              <el-tag type="danger" v-else-if="row.status === '5'">续驳回</el-tag>
+              <el-tag type="info" v-else>已结案</el-tag>        
             </template>
 
           </el-table-column>

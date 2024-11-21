@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
 const customer = {
-    getCustomerData(currentPage, pageSize) {
+    getCustomerData(currentPage, pageSize, dataType) {
         return request({
             url: '/api/customer/getlist.php',
             method: 'POST',
-            data:{currentPage, pageSize}
+            data: { currentPage, pageSize, dataType }
         })
     },
     approveCustomer(id, result, reason = '') {
@@ -20,11 +20,11 @@ const customer = {
             url: '/api/customer/resetstatus.php?id=' + id,
         })
     },
-    search(content, condition){
+    search(content, condition, dataType) {
         return request({
             url: '/api/customer/search.php',
             method: 'POST',
-            data: {content, condition}
+            data: { content, condition, dataType }
         })
     }
 

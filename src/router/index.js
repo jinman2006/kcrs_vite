@@ -19,6 +19,19 @@ const routes = [
             {
                 path: '/customer/renewallist',
                 component: () => import("@/views/admin/renewalList.vue")
+            },
+            // 结案查询
+            {
+                path: '/customer/endlist',
+                component: () => import("@/views/admin/endList.vue")
+            },
+            {
+                path: '/users',
+                component: () => import('@/views/admin/userManage.vue')
+            },
+            {
+                path: '/setting',
+                component: () => import('@/views/admin/setting.vue')
             }
         ]
     }

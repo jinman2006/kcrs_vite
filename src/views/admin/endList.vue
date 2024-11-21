@@ -11,7 +11,7 @@ const searchComb = reactive({
     condition:''
 })
 
-const dataType = ref('first')
+const dataType = ref('end')
 
 const searchBarHeight = ref('60px')
 const searchFormRef = ref()
