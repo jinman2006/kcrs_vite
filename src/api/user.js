@@ -12,6 +12,13 @@ const user = {
     // 用户登出
     logout() {
 
+    },
+    getuserlist(){
+        return request({
+            url:'/api/user/getuserlist.php',
+            method: 'POST',
+            data:{}
+        })
     }
 }
 
