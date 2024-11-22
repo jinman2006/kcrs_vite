@@ -34,7 +34,23 @@ import SidebarMenu from '@/components/SidebarMenu.vue';
             </div>
             <div class="header-middle"></div>
             <div class="header-right">
-               <el-avatar :src="logoImg" />
+               <el-dropdown trigger="click">
+                  <div class="avatar-wrapper">
+                    <el-avatar :src="logoImg" />  
+                  </div>
+                  <template #dropdown>
+                     <el-dropdown-menu class="user-dropdown">
+                        <router-link to="/">
+                        <el-dropdown-item>基本信息</el-dropdown-item>
+                        </router-link>
+                        <a target="_blank" href="#">
+                           <el-dropdown-item>修改密码</el-dropdown-item>
+                        </a>
+                        <el-dropdown-item divided @click="logout">退出</el-dropdown-item>
+                     </el-dropdown-menu>
+                  </template>
+               </el-dropdown>
+               
             </div>
          </div>
          <div class="content">
