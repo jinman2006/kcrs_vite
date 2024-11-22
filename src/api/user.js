@@ -2,22 +2,22 @@ import request from '@/utils/request.js'
 
 const user = {
     // 用户登录 
-    login(username,password) {
+    login(username, password) {
         return request({
-            url:'/api/login/',
+            url: '/api/login/',
             method: 'POST',
-            data: {username,password}
+            data: { username, password }
         })
     },
     // 用户登出
     logout() {
 
     },
-    getuserlist(){
+    getuserlist(currentPage, pageSize) {
         return request({
-            url:'/api/user/getuserlist.php',
+            url: '/api/user/getuserlist.php',
             method: 'POST',
-            data:{}
+            data: { currentPage, pageSize }
         })
     }
 }

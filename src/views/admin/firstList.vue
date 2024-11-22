@@ -159,7 +159,7 @@ const resetStatus = (row) => {
 const handleSizeChange = (val) => {
   console.log(`${val} items per page`)
   pageSize.value = val
-  currentPage.value = 1
+  
   customer.getCustomerData(currentPage.value, val, dataType.value).then( res => {
    firstReportingData.value = res.data
     }).catch( err => {
