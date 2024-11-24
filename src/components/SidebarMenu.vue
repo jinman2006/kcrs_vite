@@ -26,10 +26,19 @@
           </template>
                             
        </el-menu-item>
-       <el-menu-item index="/setting">
+       <el-sub-menu>
+         <template #title>
+            <el-icon><setting /></el-icon>
+             <span>系统设置</span>
+          </template>   
+          <el-menu-item index="/setting/notice">公告设置</el-menu-item>    
+          <el-menu-item index="/setting/email">邮箱设置</el-menu-item> 
+          <el-menu-item index="/setting/other">其它设置</el-menu-item>   
+       </el-sub-menu>
+       <!-- <el-menu-item index="/setting">
           <el-icon><setting /></el-icon>
           <span>系统设置</span>
-       </el-menu-item>
+       </el-menu-item> -->
     </el-menu>
  </div>
 </template>

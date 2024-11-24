@@ -29,9 +29,27 @@ const routes = [
                 path: '/users',
                 component: () => import('@/views/admin/userManage.vue')
             },
+            // {
+            //     path: '/setting',
+            //     component: () => import('@/views/admin/setting.vue')
+            // }
+        ]
+    },
+    {
+        path: '/setting',
+        component: () => import('@/views/admin/home.vue'),
+        children:[
             {
-                path: '/setting',
-                component: () => import('@/views/admin/setting.vue')
+                path: '/setting/notice',
+                component: () => import('@/views/admin/notice.vue')
+            },
+            {
+                path: '/setting/email',
+                component: () => import('@/views/admin/email.vue')
+            },
+            {
+                path: '/setting/other',
+                component: () => import('@/views/admin/other.vue')
             }
         ]
     }
