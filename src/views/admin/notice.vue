@@ -4,7 +4,10 @@
   import setting from "@/api/setting";
   import customer from "@/api/customer";
 
+  
+  const valueHtml = ref()
   const EditorValue = ref()
+
   const saveEditor = () => {
     // EditorValue.value.valueHtml
     // console.log(EditorValue.value.valueHtml)
@@ -13,12 +16,16 @@
     }).catch(err => {
       console.log(err)
     })
-   
-   
   }
 
-  // 需要读取原来的公告通知内容值
-  const valueHtml = ref('<p><u><em><strong>ddddd</strong></em></u></p>')
+  setting.getNotice().then(res => {
+    // console.log('getnotice res',res.data)
+    valueHtml.value = res.data
+  }).catch(err => {
+    console.log('getnotice err',err)
+  })
+
+
   // 将这个值通过依赖注入提供给子组件
   provide('noticeValue',{
     valueHtml
