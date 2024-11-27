@@ -2,6 +2,7 @@
   import { ref, reactive } from "vue"
   import setting from "@/api/setting";
 import { ElMessage } from "element-plus";
+import { Plus } from '@element-plus/icons-vue'
 
   const emailConfigForm = reactive({
     smtp:'',
@@ -10,9 +11,11 @@ import { ElMessage } from "element-plus";
     email:''
   })
 
-  const emailList = reactive({
-    list:""
-  })
+  const email  = ref()
+  const listId = ref(1)
+  const emailItem = reactive([])
+
+  const emailList = reactive([])
 
   const emailConfigRef = ref()
 
@@ -55,25 +58,42 @@ import { ElMessage } from "element-plus";
     })
   }
 
-  const saveList = () => {
-    let getlist = emailList.list.trim()
-    if(getlist !== ''){
-      let pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
-      let arr_temp = getlist.split(',')
-      for(let i=0;i<=arr_temp.length;i++){
-        console.log(arr_temp[i])
-        console.log(pattern.test(arr_temp[i]))
-        if(!pattern.test(arr_temp[i])){
-          ElMessage.error('邮箱格式不正确，请确认')
-          break
-        }else{
-          console.log('正确')
-        }
+  const addList = () => {
+    let pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
+    // 邮件格式验证通过
+    if(pattern.test(email.value)){
+      
+      emailItem['id'] = listId
+      emailItem['mail'] = email.value
 
-      }
     }else{
-      console.log('空值')
+      ElMessage.error('邮箱格式不正确')
     }
+    // console.log(email.value)
+    emailList.push(emailItem)
+    email.value = ''
+  }
+
+  const saveList = () => {
+    console.log(emailList)
+    // let getlist = emailList.list.trim()
+    // if(getlist !== ''){
+    //   let pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
+    //   let arr_temp = getlist.split(',')
+    //   for(let i=0;i<=arr_temp.length;i++){
+    //     console.log(arr_temp[i])
+    //     console.log(pattern.test(arr_temp[i]))
+    //     if(!pattern.test(arr_temp[i])){
+    //       ElMessage.error('邮箱格式不正确，请确认')
+    //       break
+    //     }else{
+    //       console.log('正确')
+    //     }
+
+    //   }
+    // }else{
+    //   console.log('空值')
+    // }
   }
 </script>
 
@@ -101,14 +121,23 @@ import { ElMessage } from "element-plus";
       </div>
     </div>
     <div class="receive-container">
-      <div class="list">
+      <div class="list-container">
         <h3 style="margin:0 0 20px 20px;">系统邮件接收列表</h3>
-        <el-form label-width="100" :model="emailList">
+        <div class="list">
+          <el-tag v-for="item in emailList" :key="item.id">{{ item.mail }}</el-tag>
+        </div>
+        <el-form label-width="100" >
           <el-form-item prop="list">
-            <el-input v-model="emailList.list" type="textarea"></el-input>
+            <el-input v-model="email">
+              <template #append>
+                <el-button :icon="Plus" @click="addList" />
+              </template>
+
+            </el-input>
           </el-form-item>
         </el-form>
         <div class="btn">
+         
           <el-button type="primary" @click="saveList">保存列表</el-button>
         </div>
       </div>
@@ -143,7 +172,7 @@ import { ElMessage } from "element-plus";
   padding: 10px;
   margin-top: 10px;
   box-sizing: border-box;
-  .list{
+  .list-container{
     width: 50%;
     margin: 10px;
     .btn{
