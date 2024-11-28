@@ -25,6 +25,30 @@ const setting = {
         return request({
             url: '/api/setting/getemailconfig.php'
         })
+    },
+    saveEmailList(data) {
+        return request({
+            url: '/api/setting/saveemaillist.php',
+            method: 'POST',
+            data
+        })
+    },
+    getEmailList() {
+        return request({
+            url: '/api/setting/getemaillist.php',
+        })
+    },
+    saveValidPeriod(day) {
+        return request({
+            url: '/api/setting/savevalidperiod.php',
+            method: 'POST',
+            data: { validperiod: day }
+        })
+    },
+    getValidPeriod() {
+        return request({
+            url: '/api/setting/getvalidperiod.php'
+        })
     }
 }
 

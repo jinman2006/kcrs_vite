@@ -19,14 +19,22 @@
           <el-menu-item index="/customer/renewallist">续报查询</el-menu-item>
           <el-menu-item index="/customer/endlist">结案查询</el-menu-item>
        </el-sub-menu>
-       <el-menu-item index="/users">
+       <!-- <el-menu-item index="/users">
           <template #title>
              <el-icon><User /></el-icon>
              <span>用户管理</span>
           </template>
                             
-       </el-menu-item>
-       <el-sub-menu>
+       </el-menu-item> -->
+       <el-sub-menu index="2">
+         <template #title>
+            <el-icon><setting /></el-icon>
+             <span>用户管理</span>
+          </template>   
+          <el-menu-item index="/users/manager">管理员列表</el-menu-item>    
+          <el-menu-item index=/users/user>经销商列表</el-menu-item>  
+       </el-sub-menu>
+       <el-sub-menu index="13">
          <template #title>
             <el-icon><setting /></el-icon>
              <span>系统设置</span>

@@ -11,13 +11,36 @@ import { Plus } from '@element-plus/icons-vue'
     email:''
   })
 
-  const email  = ref()
-  const listId = ref(1)
-  const emailItem = reactive([])
-
-  const emailList = reactive([])
-
+  const emailText  = ref('')
+  const emailList = ref([])
   const emailConfigRef = ref()
+  // const nextTodoId = ref(1)
+  // let nextTodoId = 1
+  const addEmail = () => {
+    let pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
+    if(emailText.value.trim() === ''){
+      ElMessage.error('请输入要设置的邮箱地址')
+      return
+    }
+    if(pattern.test(emailText.value)){
+      let nextTimeId = new Date().getTime()
+      emailList.value.push({
+      // id: nextTodoId.value++,
+      id:nextTimeId,//以毫秒级时间戳做为ID，避免重复
+      email:emailText.value
+      })
+      emailText.value=''
+    }else{
+      ElMessage.error('邮箱格式不正确，请确认！')
+    }
+
+  }
+
+  setting.getEmailList().then( res => {
+    emailList.value = res.data
+  }).catch( err => {
+    console.log('getlist',err)
+  })
 
   const rules = {
     smtp:[
@@ -33,6 +56,8 @@ import { Plus } from '@element-plus/icons-vue'
         {required: true, message: '请填写邮箱名', trigger: 'blur'}
     ]
   }
+
+ 
 
   setting.getEmailConfig().then(res => {
     const { data } = res
@@ -58,42 +83,37 @@ import { Plus } from '@element-plus/icons-vue'
     })
   }
 
-  const addList = () => {
-    let pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
-    // 邮件格式验证通过
-    if(pattern.test(email.value)){
+  // const addList = () => {
+  //   let pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
+  //   // 邮件格式验证通过
+  //   if(pattern.test(email.value)){
       
-      emailItem['id'] = listId
-      emailItem['mail'] = email.value
+  //     emailItem['id'] = listId
+  //     emailItem['mail'] = email.value
 
-    }else{
-      ElMessage.error('邮箱格式不正确')
-    }
-    // console.log(email.value)
-    emailList.push(emailItem)
-    email.value = ''
-  }
+  //   }else{
+  //     ElMessage.error('邮箱格式不正确')
+  //   }
+  //   // console.log(email.value)
+  //   console.log('item',emailItem)
+  //   console.log(emailList)
+  //   emailList.push(emailItem)
+  //   email.value = ''
+  // }
 
   const saveList = () => {
-    console.log(emailList)
-    // let getlist = emailList.list.trim()
-    // if(getlist !== ''){
-    //   let pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
-    //   let arr_temp = getlist.split(',')
-    //   for(let i=0;i<=arr_temp.length;i++){
-    //     console.log(arr_temp[i])
-    //     console.log(pattern.test(arr_temp[i]))
-    //     if(!pattern.test(arr_temp[i])){
-    //       ElMessage.error('邮箱格式不正确，请确认')
-    //       break
-    //     }else{
-    //       console.log('正确')
-    //     }
 
-    //   }
-    // }else{
-    //   console.log('空值')
-    // }
+    console.log(emailList.value)
+    setting.saveEmailList(emailList.value).then( res => {
+      console.log('listres',res)
+    }).catch(err=> {
+      console.log('listerr',err)
+    })
+  }
+
+  const closeTag = index => {
+    console.log('tag',index)
+    emailList.value.splice(index,1)
   }
 </script>
 
@@ -124,13 +144,20 @@ import { Plus } from '@element-plus/icons-vue'
       <div class="list-container">
         <h3 style="margin:0 0 20px 20px;">系统邮件接收列表</h3>
         <div class="list">
-          <el-tag v-for="item in emailList" :key="item.id">{{ item.mail }}</el-tag>
+          <div style="margin: 10px;" v-for="(item, index ) in emailList" :key="item.id">
+            <el-tag 
+            size="large" 
+            closable
+            @close="closeTag(index)"
+            >{{ item.email }}</el-tag>
+          </div>
+          
         </div>
-        <el-form label-width="100" >
-          <el-form-item prop="list">
-            <el-input v-model="email">
+        <el-form label-width="100">
+          <el-form-item prop="email">
+            <el-input v-model="emailText">
               <template #append>
-                <el-button :icon="Plus" @click="addList" />
+                <el-button :icon="Plus" @click="addEmail" />
               </template>
 
             </el-input>
@@ -175,6 +202,9 @@ import { Plus } from '@element-plus/icons-vue'
   .list-container{
     width: 50%;
     margin: 10px;
+    .list{
+      margin-left: 100px;
+    }
     .btn{
       margin-top: 20px;
       display: flex;

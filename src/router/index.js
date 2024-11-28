@@ -36,9 +36,23 @@ const routes = [
         ]
     },
     {
+        path: '/users',
+        component: () => import('@/views/admin/home.vue'),
+        children: [
+            {
+                path: '/users/manager',
+                component: () => import('@/views/admin/adminManage.vue')
+            },
+            {
+                path: '/users/user',
+                component: () => import('@/views/admin/userManage.vue')
+            },
+        ]
+    },
+    {
         path: '/setting',
         component: () => import('@/views/admin/home.vue'),
-        children:[
+        children: [
             {
                 path: '/setting/notice',
                 component: () => import('@/views/admin/notice.vue')
