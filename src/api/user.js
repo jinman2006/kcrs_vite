@@ -13,11 +13,11 @@ const user = {
     logout() {
 
     },
-    getuserlist(currentPage, pageSize) {
+    getuserlist(currentPage, pageSize, type='user') {
         return request({
             url: '/api/user/getuserlist.php',
             method: 'POST',
-            data: { currentPage, pageSize }
+            data: { currentPage, pageSize, type }
         })
     }
 }

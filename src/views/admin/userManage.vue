@@ -11,7 +11,11 @@
   const pageSize = ref(10)
   const total = ref(0)
   const background = ref(false)
-  const paginationShow = ref(true)
+//   const paginationShow = ref(true)
+
+  const paginationShow = computed( ()=>{
+      return total.value>pageSize.value?true:false
+  })
 
    // 修改页码
   const handleCurrentChange = val => {
