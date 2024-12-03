@@ -1,6 +1,7 @@
 <script setup>
-  import { computed, ref } from "vue"
+  import { computed, ref, provide } from "vue"
   import user from "@/api/user";
+  import UserEdit from "@/components/UserEdit.vue";
 
   const UserListData = ref([])
 
@@ -72,10 +73,23 @@ const isShow = ref(false)
 const saleManagerShow = computed(() => {
    return dialogData.user_permission === '3'?true:false
 })
+
+
+const addUserShow = ref(false)
+provide('addUserShow',{
+   addUserShow
+})
+const addUser = () => {
+   addUserShow.value = true
+}
+
 </script>
 
 <template>
    <div class="userlist">
+      <div class="listheader">
+         <el-button type="primary" @click="addUser">新增</el-button>
+      </div>
         <el-table 
          :data="UserListData"
          border
@@ -125,6 +139,7 @@ const saleManagerShow = computed(() => {
             />
         </div>  
    </div>
+   <user-edit v-show="addUserShow"></user-edit>
    <div class="userdetail">
       <el-dialog v-model="isShow" width="60%">
          <div class="detailform">
@@ -186,6 +201,12 @@ const saleManagerShow = computed(() => {
    align-items: center;
    box-sizing: border-box;
    padding: 20px 0;
+   .listheader{
+      width: 100%;
+      // margin: 10px;
+      padding: 10px 20px;
+      box-sizing: border-box;
+   }
    .pagination-container{
       box-sizing: border-box;
        height: 80px;

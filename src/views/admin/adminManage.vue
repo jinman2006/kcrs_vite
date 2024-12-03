@@ -77,6 +77,9 @@ const saleManagerShow = computed(() => {
 
 <template>
    <div class="userlist">
+         <div class="listheader">
+            <el-button type="primary">新增</el-button>
+         </div>
         <el-table 
          :data="UserListData"
          border
@@ -187,6 +190,11 @@ const saleManagerShow = computed(() => {
    align-items: center;
    box-sizing: border-box;
    padding: 20px 0;
+   .listheader{
+      width: 100%;
+      padding: 10px 20px;
+      box-sizing: border-box;
+   }
    .pagination-container{
       box-sizing: border-box;
        height: 80px;
