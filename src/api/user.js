@@ -19,6 +19,16 @@ const user = {
             method: 'POST',
             data: { currentPage, pageSize, type }
         })
+    },
+    getSaleManagerList(){
+        return request({
+            url:'/api/user/getsalemanagerlist.php'
+        })
+    },
+    getAgentList(){
+        return request({
+            url:'/api/user/getagentlist.php'
+        })
     }
 }
 
