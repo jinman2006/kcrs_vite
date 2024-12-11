@@ -6,6 +6,9 @@ import logoImg from '@/assets/img/logo.png'
 
 import SidebarMenu from '@/components/SidebarMenu.vue';
 
+const logout = () => {
+   
+}
 
 
 

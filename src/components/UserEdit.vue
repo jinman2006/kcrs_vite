@@ -15,29 +15,63 @@
     agent:''
   })
 
+// 当权限选择办事处理时检查代理商有没有被选择
+const checkAgent = (rule, value, callback) => {
+   if(userInfoData.user_permission == '0' && value == ''){
+      return callback(new Error("请选择办事处理所属的代理商"))
+   }else{
+      callback()      
+   }
+}
 
-   
+// 检查邮箱
+var pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+const checkEmail = (rule, value, callback) => {
+   if(!value){
+      callback(new Error("请填写email地址"))
+   }
+   if(!pattern.test(value)){
+      callback(new Error("格式不正确，请填写正确的email地址"))
+
+   }
+   callback()
+}
+const checkEmail2 = (rule, value, callback) => {
+   if(!!value && !pattern.test(value)){
+      callback(new Error("email格式不正确"))
+   }else{
+      callback()
+   }
+}
 
 const addRules = {
-    userid:[
+    user_id:[
         {required: true, message: '请填写用户名', trigger: 'blur'}
     ],
-    company:[
+    o_company:[
         {required:true, message:'请填写公司名称',trigger:'blur'}
     ],
-    contact:[
+    o_contact:[
         {required:true, message:'请填写联系人',trigger:'blur'}
     ],
-    tel:[
+    o_tel:[
         {required:true, message:'请填写电话',trigger:'blur'}
     ],
-    email:[
-        {required:true, message:'请填写联邮箱',trigger:'blur'}
+    o_email:[
+        {required: true,message:'请填写email', trigger:'blur'},
+        {validator:checkEmail}
     ],
-    permission:[
+    o_email2:[
+        {validator:checkEmail2,trigger:'blur'} 
+    ],
+    user_permission:[
         {required:true, message:'请选择用户级别',trigger:'blur'}
-    ]
+    ],
+    agent:[
+      {validator:checkAgent, trigger:'blur'}
+   ]
 }
+
 
 const saleManagerShow = ref(false)
 const saleManagerList = ref([])
@@ -80,10 +114,17 @@ const selectChange = value => {
 
 const addUserForm = ref()
 const addSubmit = () => {
+   // console.log(addUserForm.value.validate())
    addUserForm.value.validate((valid,field) => {
+      console.log('valid',valid)
       if(!valid){
          return
       }
+      user.addUser(userInfoData).then( res => {
+         console.log(res)
+      }).catch( err => {
+         console.log('adduser err',err)
+      })
    })
 }
 </script>
@@ -93,25 +134,25 @@ const addSubmit = () => {
       <el-dialog v-model="addUserShow" width="60%">
          <div class="detailform">
             <el-form label-width="100" :rules="addRules" :model="userInfoData" ref="addUserForm">
-               <el-form-item label="用户名" prop="userid">
+               <el-form-item label="用户名" prop="user_id">
                   <el-input v-model="userInfoData.user_id"></el-input>
                </el-form-item>
-               <el-form-item label="公司名称" prop="company">
+               <el-form-item label="公司名称" prop="o_company">
                   <el-input v-model="userInfoData.o_company"></el-input>
                </el-form-item>
-               <el-form-item label="联系人" prop="contact">
+               <el-form-item label="联系人" prop="o_contact">
                   <el-input v-model="userInfoData.o_contact"></el-input>
                </el-form-item>
-               <el-form-item label="电话" prop="tel">
+               <el-form-item label="电话" prop="o_tel">
                   <el-input v-model="userInfoData.o_tel"></el-input>
                </el-form-item>
-               <el-form-item label="email" prop="email">
+               <el-form-item label="email" prop="o_email">
                   <el-input v-model="userInfoData.o_email"></el-input>
                </el-form-item>
-               <el-form-item label="备用mail">
+               <el-form-item label="备用mail" prop="o_email2">
                   <el-input v-model="userInfoData.o_email2"></el-input>
                </el-form-item>
-               <el-form-item label="用户级别" prop="permission">
+               <el-form-item label="用户级别" prop="user_permission">
                   <!-- 1管理员 2代理商 3销售经理 0办事处 4经销商 -->
                   <!-- <el-input v-model="dialogData.user_permission"></el-input> -->
                   <el-select 
@@ -124,7 +165,7 @@ const addSubmit = () => {
                      <el-option label="经销商" value="4" />
                   </el-select>
                </el-form-item>
-               <el-form-item label="所属代理" v-show="agentShow">
+               <el-form-item label="所属代理" v-show="agentShow" prop="agent">
                   <el-select
                   :placeholder="agentLoadText"
                   v-model="userInfoData.agent"
