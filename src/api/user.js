@@ -36,6 +36,13 @@ const user = {
             method: 'POST',
             data
         })
+    },
+    addManager(data) {
+        return request({
+            url: '/api/user/addmanager.php',
+            method: 'POST',
+            data
+        })
     }
 }
 

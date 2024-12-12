@@ -83,6 +83,18 @@ const addUser = () => {
    addUserShow.value = true
 }
 
+const updateUserList = isDone => {
+   total.value ++
+   let lastPage = Math.ceil(total.value / pageSize.value)
+
+   if(isDone){//true 新增完成，false 未完成
+      addUserShow.value = false
+      handleCurrentChange(lastPage)
+   }
+   
+   console.log('update')
+}
+
 </script>
 
 <template>
@@ -139,7 +151,7 @@ const addUser = () => {
             />
         </div>  
    </div>
-   <user-edit v-show="addUserShow"></user-edit>
+   <user-edit v-show="addUserShow" @updateUserList="updateUserList"></user-edit>
    <div class="userdetail">
       <el-dialog v-model="isShow" width="60%">
          <div class="detailform">

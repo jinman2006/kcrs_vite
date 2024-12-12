@@ -1,6 +1,7 @@
 <script setup>
-  import { computed, ref } from "vue"
+  import { computed, reactive, ref } from "vue"
   import user from "@/api/user";
+import { ElMessageBox } from "element-plus";
 
   const UserListData = ref([])
 
@@ -12,6 +13,9 @@
   const total = ref(0)
   const background = ref(false)
 //   const paginationShow = ref(false)
+
+  const isShow = ref(false)
+  const addBtnShow = ref(false)
 
   const paginationShow = computed( ()=>{
       return total.value>pageSize.value?true:false
@@ -52,11 +56,93 @@ user.getuserlist(currentPage.value, pageSize.value, 'admin').then( res => {
    console.log('umanage',err)
 })
 
+const adminInfo = reactive({
+   user_id:'',
+   o_contact:'',
+   o_tel:'',
+   o_email:''
+})
+
+// 检查邮箱
+var pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+const checkEmail = (rule, value, callback) => {
+   if(!value){
+      callback(new Error("请填写email地址"))
+   }
+   if(!pattern.test(value)){
+      callback(new Error("格式不正确，请填写正确的email地址"))
+
+   }
+   callback()
+}
+
+const adminRules = {
+   user_id:[
+        {required: true, message: '请填写用户名', trigger: 'blur'}
+    ],
+    o_company:[
+        {required:true, message:'请填写公司名称',trigger:'blur'}
+    ],
+    o_contact:[
+        {required:true, message:'请填写联系人',trigger:'blur'}
+    ],
+    o_tel:[
+        {required:true, message:'请填写电话',trigger:'blur'}
+    ],
+    o_email:[
+        {required: true,message:'请填写email', trigger:'blur'},
+        {validator:checkEmail} 
+    ]  
+}
+
 const dialogData = ref()
+
+const addManagerShow = () => {
+   isShow.value = true
+   addBtnShow.value = true
+   dialogData.value = adminInfo
+   
+}
+
+const addAdminForm = ref()
+const addManager = () => {
+   addAdminForm.value.validate((valid,field) => {
+      if(!valid){
+         return
+      }
+      user.addManager(dialogData.value).then( res => {
+         console.log('addmanager res',res)
+         if(res.success && res.code === 200){
+            ElMessageBox.confirm(
+               res.message+'返回列表页',
+               '操作提示',
+               {
+                  confirmButtonText: 'OK',
+                  cancelButtonText: 'Cancel',
+                  type: 'success',                   
+               }
+            ).then(() => {
+               addAdminForm.value.resetFields()
+               total.value ++
+               let lastPage = Math.ceil(total.value / pageSize.value)
+               handleCurrentChange(lastPage)
+               isShow.value = false
+            }).catch(() => {
+               addAdminForm.value.resetFields()
+               total.value ++
+            })
+         }
+      }).catch(err => {
+         console.log('addmanager err',err)
+      })
+   })
+}
+
 //单击名称弹出详情对话页
 const userClick = (row, column, cell, event) => {
    if(column.property !== 'user_id') return
     isShow.value = true
+    addBtnShow.value = false
     dialogData.value = row
     console.log('row',row)
 }
@@ -69,7 +155,7 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
     }
 }
 
-const isShow = ref(false)
+
 const saleManagerShow = computed(() => {
    return dialogData.user_permission === '3'?true:false
 })
@@ -78,7 +164,7 @@ const saleManagerShow = computed(() => {
 <template>
    <div class="userlist">
          <div class="listheader">
-            <el-button type="primary">新增</el-button>
+            <el-button type="primary" @click="addManagerShow">新增</el-button>
          </div>
         <el-table 
          :data="UserListData"
@@ -132,45 +218,34 @@ const saleManagerShow = computed(() => {
    <div class="userdetail">
       <el-dialog v-model="isShow" width="60%">
          <div class="detailform">
-            <el-form label-width="100">
-               <el-form-item label="用户名">
+            <el-form 
+               label-width="100"  
+               :rules="adminRules" 
+               :model="dialogData"
+               ref="addAdminForm">
+               <el-form-item label="用户名" prop="user_id">
                   <el-input v-model="dialogData.user_id"></el-input>
                </el-form-item>
-               <el-form-item label="公司名称">
-                  <el-input v-model="dialogData.o_company"></el-input>
-               </el-form-item>
-               <el-form-item label="联系人">
+               <el-form-item label="姓名" prop="o_contact">
                   <el-input v-model="dialogData.o_contact"></el-input>
                </el-form-item>
-               <el-form-item label="电话">
+               <el-form-item label="电话" prop="o_tel">
                   <el-input v-model="dialogData.o_tel"></el-input>
                </el-form-item>
-               <el-form-item label="email">
+               <el-form-item label="email" prop="o_email">
                   <el-input v-model="dialogData.o_email"></el-input>
                </el-form-item>
-               <el-form-item label="备用mail">
-                  <el-input v-model="dialogData.o_email2"></el-input>
-               </el-form-item>
-               <el-form-item label="用户级别">
-                  <!-- 1管理员 2代理商 3销售经理 0办事处 4经销商 -->
-                  <!-- <el-input v-model="dialogData.user_permission"></el-input> -->
-                  <el-select v-model="dialogData.user_permission">
-                     <el-option label="代理商" value="2" />
-                     <el-option label="办事处" value="0" />
-                     <el-option label="销售经理" value="3" />
-                     <el-option label="经销商" value="4" />
-                  </el-select>
-               </el-form-item>
-               <el-form-item label="销售经理" v-show="saleManagerShow">
-                  <el-select>
-                     <el-option></el-option>
-                  </el-select>
-               </el-form-item>
                <el-form-item>
-                  <el-button type="primary">修改</el-button>
-                  <el-button type="warning">锁定</el-button>
-                  <el-button type="">重置密码</el-button>
-                  <el-button type="danger">删除</el-button>
+                  <div v-show="addBtnShow">
+                     <el-button type="primary" @click="addManager">提交</el-button>
+                  </div>
+                  <div v-show="!addBtnShow">
+                     <el-button type="primary">修改</el-button>
+                     <el-button type="warning">锁定</el-button>
+                     <el-button type="">重置密码</el-button>
+                     <el-button type="danger">删除</el-button>                    
+                  </div>
+
                </el-form-item>
             </el-form>
          </div>

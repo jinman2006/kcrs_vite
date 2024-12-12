@@ -1,6 +1,7 @@
 <script setup>
   import { inject, reactive, ref } from "vue"
   import user from "@/api/user";
+import { ElMessage, ElMessageBox } from "element-plus";
 
   const { addUserShow } = inject('addUserShow')
   const userInfoData = reactive({
@@ -111,7 +112,7 @@ const selectChange = value => {
 
 
 
-
+const emit = defineEmits(['updateUserList'])
 const addUserForm = ref()
 const addSubmit = () => {
    // console.log(addUserForm.value.validate())
@@ -122,6 +123,28 @@ const addSubmit = () => {
       }
       user.addUser(userInfoData).then( res => {
          console.log(res)
+         if(res.success && res.code ===200){ 
+            ElMessageBox.confirm(
+               res.message+' 返回列表页',
+               '操作提示',
+               {
+                  confirmButtonText: 'OK',
+                  cancelButtonText: 'Cancel',
+                  type: 'success',                  
+               }
+            ).then(() => {
+               addUserForm.value.resetFields()
+               saleManagerShow.value = false
+               agentShow.value = false
+               emit('updateUserList',true)               
+            }).catch(() => {
+               addUserForm.value.resetFields()
+               emit('updateUserList',false)            
+            })
+
+         }else{
+            ElMessage.error(res.message)
+         }
       }).catch( err => {
          console.log('adduser err',err)
       })
