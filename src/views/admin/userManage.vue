@@ -2,6 +2,7 @@
   import { computed, ref, provide } from "vue"
   import user from "@/api/user";
   import UserEdit from "@/components/UserEdit.vue";
+  import { diffDataForm } from "@/utils/formdata";
 
   const UserListData = ref([])
 
@@ -53,11 +54,13 @@ user.getuserlist(currentPage.value, pageSize.value).then( res => {
 })
 
 const dialogData = ref()
+const dialogData_copy = ref()
 //单击名称弹出详情对话页
 const userClick = (row, column, cell, event) => {
    if(column.property !== 'user_id') return
     isShow.value = true
     dialogData.value = row
+    dialogData_copy = JSON.parse(JSON.stringify(row))
     console.log('row',row)
 }
 // 鼠标移入名称单元格，鼠标样式更改为手指开关
@@ -93,6 +96,18 @@ const updateUserList = isDone => {
    }
    
    console.log('update')
+}
+
+// 修改用户
+const modifyUser = () => {
+   console.log('data',dialogData.value)
+   console.log('copy',dialogData_copy.value)
+   let modifyData  = diffDataForm(dialogData.value,dialogData_copy.value)
+   // if(Object.keys(modifyData).length === 0){
+   //    console.log('没有改变')
+   // }else{
+   //    console.log('改变')
+   // }
 }
 
 </script>
@@ -157,10 +172,10 @@ const updateUserList = isDone => {
          <div class="detailform">
             <el-form label-width="100">
                <el-form-item label="用户名">
-                  <el-input v-model="dialogData.user_id"></el-input>
+                  <el-input v-model="dialogData.user_id" disabled></el-input>
                </el-form-item>
                <el-form-item label="公司名称">
-                  <el-input v-model="dialogData.o_company"></el-input>
+                  <el-input v-model="dialogData.o_company" @change="company_change"></el-input>
                </el-form-item>
                <el-form-item label="联系人">
                   <el-input v-model="dialogData.o_contact"></el-input>
@@ -190,7 +205,7 @@ const updateUserList = isDone => {
                   </el-select>
                </el-form-item>
                <el-form-item>
-                  <el-button type="primary">修改</el-button>
+                  <el-button type="primary" @click="modifyUser">修改</el-button>
                   <el-button type="warning">锁定</el-button>
                   <el-button type="">重置密码</el-button>
                   <el-button type="danger">删除</el-button>

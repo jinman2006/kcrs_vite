@@ -224,7 +224,7 @@ const saleManagerShow = computed(() => {
                :model="dialogData"
                ref="addAdminForm">
                <el-form-item label="用户名" prop="user_id">
-                  <el-input v-model="dialogData.user_id"></el-input>
+                  <el-input v-model="dialogData.user_id" :disabled="!addBtnShow"></el-input>
                </el-form-item>
                <el-form-item label="姓名" prop="o_contact">
                   <el-input v-model="dialogData.o_contact"></el-input>
