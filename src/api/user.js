@@ -43,6 +43,41 @@ const user = {
             method: 'POST',
             data
         })
+    },
+    modifyUser(data) {
+        return request({
+            url: '/api/user/modifyuser.php',
+            method: 'POST',
+            data
+        })
+    },
+    lockUser(data) {
+        return request({
+            url: '/api/user/lockuser.php',
+            method: 'POST',
+            data: { o_no: data, action: 'lock' }
+        })
+    },
+    unlockUser(data) {
+        return request({
+            url: '/api/user/lockuser.php',
+            method: 'POST',
+            data: { o_no: data, action: 'unlock' }
+        })
+    },
+    resetPassword(data) {
+        return request({
+            url: "/api/user/resetpassword.php",
+            method: 'POST',
+            data: { o_no: data }
+        })
+    },
+    delUser(data) {
+        return request({
+            url: "/api/user/deluser.php",
+            method: 'POST',
+            data: { o_no: data }
+        })
     }
 }
 

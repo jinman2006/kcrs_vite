@@ -3,6 +3,7 @@
   import user from "@/api/user";
   import UserEdit from "@/components/UserEdit.vue";
   import { diffDataForm } from "@/utils/formdata";
+import { ElMessage } from "element-plus";
 
   const UserListData = ref([])
 
@@ -60,8 +61,8 @@ const userClick = (row, column, cell, event) => {
    if(column.property !== 'user_id') return
     isShow.value = true
     dialogData.value = row
-    dialogData_copy = JSON.parse(JSON.stringify(row))
-    console.log('row',row)
+    dialogData_copy.value = JSON.parse(JSON.stringify(row))
+
 }
 // 鼠标移入名称单元格，鼠标样式更改为手指开关
 const mousePointer = (row, column, rowIndex, columnIndex) => {
@@ -99,15 +100,79 @@ const updateUserList = isDone => {
 }
 
 // 修改用户
-const modifyUser = () => {
+const modifyUser = (e) => {
    console.log('data',dialogData.value)
    console.log('copy',dialogData_copy.value)
    let modifyData  = diffDataForm(dialogData.value,dialogData_copy.value)
-   // if(Object.keys(modifyData).length === 0){
-   //    console.log('没有改变')
-   // }else{
-   //    console.log('改变')
-   // }
+   if(JSON.stringify(modifyData) =="{}"){
+      ElMessage.error("表单未修改")
+   }else{
+      console.log('modifyData',modifyData)
+      modifyData['o_no'] = e
+      user.modifyUser(modifyData).then( res => {
+         console.log('modify res', res)
+         if(res.success){
+            ElMessage.success(res.message)
+         }else{
+            ElMessage.error(res.message)
+         }
+      }).catch( err => {
+         console.log('modify err',err)
+      })
+   }
+}
+
+// 锁定用户
+const lockUser = e => {
+   user.lockUser(e).then( res => {
+      if(res.success){
+         dialogData.value.id_status='0'
+         ElMessage.success(res.message)
+      }else{
+         ElMessage.error(res.message)
+      }
+   }).catch(err => {
+      console.log('lockuser err', err)
+   })
+}
+// 解锁用户
+const unlockUser = e => {
+   user.unlockUser(e).then( res => {
+      if(res.success){
+         dialogData.value.id_status='1'
+         ElMessage.success(res.message)
+      }else{
+         ElMessage.error(res.message)
+      }
+   }).catch(err => {
+      console.log('unlock err',err)
+   })
+}
+
+// 重置密码
+const resetPassword = e => {
+   user.resetPassword(e).then(res => {
+      if(res.success){
+         ElMessage.success(res.message)
+      }else{
+         ElMessage.error(res.message)
+      }
+   }).catch(err => {
+      console.log('resetpass err',err)
+   })
+}
+
+// 删除用户
+const delUser = e => {
+   user.delUser(e).then(res => {
+      if(res.success){
+         ElMessage.success(res.message)
+      }else{
+         ElMessage.error(res.message)
+      }
+}).catch(err => {
+   console.log('resetpass err',err)
+})
 }
 
 </script>
@@ -139,15 +204,15 @@ const modifyUser = () => {
             </el-table-column>
             <el-table-column prop="id_status" label="状态">
                <template #default="{row}">
-                  <el-text v-if="row.id_status === '1'">正常</el-text>
-                  <el-text v-else-if="row.id_status === '0'">锁定</el-text>
+                  <el-text v-if="row.id_status === '1'" type="success" >正常</el-text>
+                  <el-text v-else-if="row.id_status === '0'" type="warning">锁定</el-text>
                   <el-text v-else>删除</el-text>
                </template>
             </el-table-column>
             <el-table-column prop="last_date" label="登录时间" show-overflow-tooltip />
             <el-table-column  label="快捷操作" fixed="right" min-width="90">
              <template #default="{row}">
-                <el-button link type="warning" size="small" @click="userLock(row)">密码重置</el-button>
+                <el-button link type="primary" size="small" @click="resetPassword(row)">密码重置</el-button>
              </template>
             </el-table-column>
         </el-table>
@@ -175,7 +240,7 @@ const modifyUser = () => {
                   <el-input v-model="dialogData.user_id" disabled></el-input>
                </el-form-item>
                <el-form-item label="公司名称">
-                  <el-input v-model="dialogData.o_company" @change="company_change"></el-input>
+                  <el-input v-model="dialogData.o_company" ></el-input>
                </el-form-item>
                <el-form-item label="联系人">
                   <el-input v-model="dialogData.o_contact"></el-input>
@@ -205,10 +270,11 @@ const modifyUser = () => {
                   </el-select>
                </el-form-item>
                <el-form-item>
-                  <el-button type="primary" @click="modifyUser">修改</el-button>
-                  <el-button type="warning">锁定</el-button>
-                  <el-button type="">重置密码</el-button>
-                  <el-button type="danger">删除</el-button>
+                  <el-button type="primary" @click="modifyUser(dialogData.o_no)">修改</el-button>
+                  <el-button type="warning" @click="lockUser(dialogData.o_no)" v-show="dialogData.id_status==1">锁定</el-button>
+                  <el-button type="success" @click="unlockUser(dialogData.o_no)" v-show="dialogData.id_status==0">解锁</el-button>
+                  <el-button type="" @click="resetPassword(dialogData.o_no)">重置密码</el-button>
+                  <el-button type="danger" @click="delUser(dialogData.o_no)">删除</el-button>
                </el-form-item>
             </el-form>
          </div>
