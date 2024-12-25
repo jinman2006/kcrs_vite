@@ -14,8 +14,14 @@ const props = defineProps({
     total:{
         type:Number,
         required:true
+    },
+    tableColumnArr:{
+        type:Array,
+        required:true
     }
 })
+
+console.log(props.tabletype)
 
 const emit = defineEmits(['passClick', 'rejectClick', 'resetStatus', 'handleSizeChange', 'handleCurrentChange'])
 function passClick(){
@@ -75,24 +81,26 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
             @cell-click="cellClick"
             :cell-style = "mousePointer"
         >
-          <el-table-column prop="provinces" width="60" label="区域" show-overflow-tooltip/>
+          <!-- <el-table-column prop="provinces" width="60" label="区域" show-overflow-tooltip/>
           <el-table-column prop="ccompany" min-width="150" label="名称" show-overflow-tooltip />
           <el-table-column prop="ccontact" label="联系人" />
           <el-table-column prop="ctel" label="电话" show-overflow-tooltip />
           <el-table-column prop="cdept" label="职位" width="80" show-overflow-tooltip/>
-          <el-table-column prop="cmodel" label="机型" show-overflow-tooltip />
+          <el-table-column prop="delay_reason" label="原因"  show-overflow-tooltip/>
+          <el-table-column prop="cmodel" label="机型" show-overflow-tooltip /> -->
+          <el-table-column v-for="item in tableColumnArr" :key="item.key" :width="item.width" :min-width="item.minwidth" :prop="item.key" :label="item.colName" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="caddress" label="地址" show-overflow-tooltip /> -->
           <el-table-column prop="status" label="状态" >
 
             <!-- 状态以标签显示的这种方式，修改时会有明显动作，再没有找到合适解决办法前选用v-if -->
             <template #default="{row}">
-              <el-tag v-if="row.status === '0'">待审核</el-tag>
-              <el-tag type="success" v-else-if="row.status === '1'">已通过</el-tag>
-              <el-tag type="danger" v-else-if="row.status === '2'">已驳回</el-tag>
-              <el-tag  v-else-if="row.status === '3'">待续审</el-tag>
-              <el-tag type="success" v-else-if="row.status === '4'">已续期</el-tag>
-              <el-tag type="danger" v-else-if="row.status === '5'">续驳回</el-tag>
-              <el-tag type="info" v-else>已结案</el-tag>        
+              <el-text v-if="row.status === '0'">待审核</el-text>
+              <el-text type="success" v-else-if="row.status === '1'">已通过</el-text>
+              <el-text type="danger" v-else-if="row.status === '2'">已驳回</el-text>
+              <el-text  v-else-if="row.status === '3'">待续审</el-text>
+              <el-text type="success" v-else-if="row.status === '4'">已续期</el-text>
+              <el-text type="danger" v-else-if="row.status === '5'">续驳回</el-text>
+              <el-text type="info" v-else>已结案</el-text>        
             </template>
 
           </el-table-column>

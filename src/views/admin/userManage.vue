@@ -3,7 +3,7 @@
   import user from "@/api/user";
   import UserEdit from "@/components/UserEdit.vue";
   import { diffDataForm } from "@/utils/formdata";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 
   const UserListData = ref([])
 
@@ -37,12 +37,6 @@ import { ElMessage } from "element-plus";
    })
   }
 
-  const userLock = () => {
-
-  }
-  const userDelete = () => {
-
-  }
 
 // 取初始数据
 user.getuserlist(currentPage.value, pageSize.value).then( res => {
@@ -151,28 +145,69 @@ const unlockUser = e => {
 
 // 重置密码
 const resetPassword = e => {
-   user.resetPassword(e).then(res => {
-      if(res.success){
-         ElMessage.success(res.message)
-      }else{
-         ElMessage.error(res.message)
-      }
-   }).catch(err => {
-      console.log('resetpass err',err)
-   })
+   ElMessageBox.confirm(
+            '确定要重置密码吗？',
+            '操作提醒',
+            {
+                  confirmButtonText:'确认重置',
+                  cancelButtonText:'取消操作',
+                  type: 'warning'
+            }
+   ).then(() => {     
+      user.resetPassword(e).then(res => {
+         if(res.success){
+            // ElMessage.success(res.message)
+            ElMessageBox.alert('重置后的密码为：'+res.data ,'重置成功，请保存')
+         
+         }else{
+            ElMessage.error(res.message)
+         }
+      }).catch(err => {
+         console.log('resetpass err',err)
+      })
+   }).catch(() => {
+            console.log('取消')
+   }) 
 }
 
 // 删除用户
 const delUser = e => {
-   user.delUser(e).then(res => {
-      if(res.success){
-         ElMessage.success(res.message)
-      }else{
-         ElMessage.error(res.message)
-      }
-}).catch(err => {
-   console.log('resetpass err',err)
-})
+   ElMessageBox.confirm(
+      '确定要删除该用户吗？',
+      '操作提醒',
+      {
+            confirmButtonText:'确认删除',
+            cancelButtonText:'取消操作',
+            type: 'warning'
+      }      
+   ).then(() => {
+      user.delUser(e).then(res => {
+         if(res.success){
+            UserListData.value = UserListData.value.filter(item => item.o_no!==e)
+            // console.log(UserListData.value)
+
+            total.value --
+            if(UserListData.value.length === 0 && currentPage.value >1){
+               currentPage.value--
+               user.getuserlist(currentPage.value, pageSize.value).then( res => {
+                  UserListData.value = res.data
+               }).catch( err => {
+                  console.log('handlesizechange err',err)
+               })            
+            }
+            isShow.value = false
+            ElMessage.success(res.message)
+
+         }else{
+            ElMessage.error(res.message)
+         }
+      }).catch(err => {
+         console.log('resetpass err',err)
+      })      
+   }).catch(() => {
+            console.log('取消')
+   }) 
+
 }
 
 </script>
@@ -212,7 +247,7 @@ const delUser = e => {
             <el-table-column prop="last_date" label="登录时间" show-overflow-tooltip />
             <el-table-column  label="快捷操作" fixed="right" min-width="90">
              <template #default="{row}">
-                <el-button link type="primary" size="small" @click="resetPassword(row)">密码重置</el-button>
+                <el-button link type="primary" size="small" @click="resetPassword(row.o_no)">密码重置</el-button>
              </template>
             </el-table-column>
         </el-table>

@@ -1,7 +1,8 @@
 <script setup>
   import { computed, reactive, ref } from "vue"
   import user from "@/api/user";
-import { ElMessageBox } from "element-plus";
+  import { ElMessageBox, ElMessage } from "element-plus";
+  import { diffDataForm } from "@/utils/formdata";
 
   const UserListData = ref([])
 
@@ -36,13 +37,6 @@ import { ElMessageBox } from "element-plus";
    }).catch( err => {
       console.log('handlesizechange err',err)
    })
-  }
-
-  const userLock = () => {
-
-  }
-  const userDelete = () => {
-
   }
 
 // 取初始数据
@@ -139,11 +133,13 @@ const addManager = () => {
 }
 
 //单击名称弹出详情对话页
+const dialogData_copy = ref()
 const userClick = (row, column, cell, event) => {
    if(column.property !== 'user_id') return
     isShow.value = true
     addBtnShow.value = false
     dialogData.value = row
+    dialogData_copy.value = JSON.parse(JSON.stringify(row))
     console.log('row',row)
 }
 // 鼠标移入名称单元格，鼠标样式更改为手指开关
@@ -155,10 +151,112 @@ const mousePointer = (row, column, rowIndex, columnIndex) => {
     }
 }
 
+const modifyAdmin = e => {
+   let modifyData  = diffDataForm(dialogData.value,dialogData_copy.value)
+   if(JSON.stringify(modifyData) =="{}"){
+      ElMessage.error("表单未修改")
+   }else{
+      console.log('modifyData',modifyData)
+      modifyData['o_no'] = e
+      user.modifyUser(modifyData).then( res => {
+         console.log('modify res', res)
+         if(res.success){
+            ElMessage.success(res.message)
+         }else{
+            ElMessage.error(res.message)
+         }
+      }).catch( err => {
+         console.log('modify err',err)
+      })
+   }
+}
 
-const saleManagerShow = computed(() => {
-   return dialogData.user_permission === '3'?true:false
-})
+const lockAdmin = e => {
+   user.lockUser(e).then( res => {
+      if(res.success){
+         dialogData.value.id_status='0'
+         ElMessage.success(res.message)
+      }else{
+         ElMessage.error(res.message)
+      }
+   }).catch(err => {
+      console.log('lockuser err', err)
+   })
+}
+
+const unlockUser = e => {
+   user.unlockUser(e).then( res => {
+      if(res.success){
+         dialogData.value.id_status='1'
+         ElMessage.success(res.message)
+      }else{
+         ElMessage.error(res.message)
+      }
+   }).catch(err => {
+      console.log('unlock err',err)
+   })
+}
+
+const resetPassword = e => {
+   ElMessageBox.confirm(
+            '确定要重置密码吗？',
+            '操作提醒',
+            {
+                  confirmButtonText:'确认重置',
+                  cancelButtonText:'取消操作',
+                  type: 'warning'
+            }
+   ).then(() => {     
+      user.resetPassword(e).then(res => {
+         if(res.success){
+            // ElMessage.success(res.message)
+            ElMessageBox.alert('重置后的密码为：'+res.data ,'重置成功，请保存')
+         
+         }else{
+            ElMessage.error(res.message)
+         }
+      }).catch(err => {
+         console.log('resetpass err',err)
+      })
+   }).catch(() => {
+            console.log('取消')
+   }) 
+}
+
+const delAdmin = e => {
+   ElMessageBox.confirm(
+      '确定要删除该用户吗？',
+      '操作提醒',
+      {
+            confirmButtonText:'确认删除',
+            cancelButtonText:'取消操作',
+            type: 'warning'
+      }      
+   ).then(() => {
+      user.delUser(e).then(res => {
+         if(res.success){
+            UserListData.value = UserListData.value.filter(item => item.o_no!==e)
+            total.value --
+            if(UserListData.value.length === 0 && currentPage.value >1){
+               currentPage.value--
+               user.getuserlist(currentPage.value, pageSize.value).then( res => {
+                  UserListData.value = res.data
+               }).catch( err => {
+                  console.log('handlesizechange err',err)
+               })            
+            }
+            ElMessage.success(res.message)
+
+         }else{
+            ElMessage.error(res.message)
+         }
+      }).catch(err => {
+         console.log('resetpass err',err)
+      })      
+   }).catch(() => {
+            console.log('取消')
+   }) 
+}
 </script>
 
 <template>
@@ -177,26 +275,18 @@ const saleManagerShow = computed(() => {
             <el-table-column prop="o_company" label="公司" show-overflow-tooltip/>
             <el-table-column prop="o_contact" label="联系人" show-overflow-tooltip/>
             <el-table-column prop="o_tel" label="电话" show-overflow-tooltip/>
-            <el-table-column prop="user_permission" label="级别">
-               <template #default="{row}">
-                  <el-text v-if="row.user_permission === '0'">办事处</el-text>
-                  <el-text v-else-if="row.user_permission === '2'">代理商</el-text>
-                  <el-text v-else-if="row.user_permission === '3'">销售经理</el-text>
-                  <el-text v-else-if="row.user_permission === '4'">经销商</el-text>
-                  <el-text v-else>未知</el-text>
-               </template>
-            </el-table-column>
+
             <el-table-column prop="id_status" label="状态">
                <template #default="{row}">
-                  <el-text v-if="row.id_status === '1'">正常</el-text>
-                  <el-text v-else-if="row.id_status === '0'">锁定</el-text>
+                  <el-text type="success" v-if="row.id_status === '1'">正常</el-text>
+                  <el-text type="warning" v-else-if="row.id_status === '0'">锁定</el-text>
                   <el-text v-else>删除</el-text>
                </template>
             </el-table-column>
             <el-table-column prop="last_date" label="登录时间" show-overflow-tooltip />
             <el-table-column  label="快捷操作" fixed="right" min-width="90">
              <template #default="{row}">
-                <el-button link type="warning" size="small" @click="userLock(row)">密码重置</el-button>
+                <el-button link type="primary" size="small" @click="resetPassword(row.o_no)">密码重置</el-button>
              </template>
             </el-table-column>
         </el-table>
@@ -240,10 +330,11 @@ const saleManagerShow = computed(() => {
                      <el-button type="primary" @click="addManager">提交</el-button>
                   </div>
                   <div v-show="!addBtnShow">
-                     <el-button type="primary">修改</el-button>
-                     <el-button type="warning">锁定</el-button>
-                     <el-button type="">重置密码</el-button>
-                     <el-button type="danger">删除</el-button>                    
+                     <el-button type="primary" @click="modifyAdmin(dialogData.o_no)">修改</el-button>
+                     <el-button type="warning" @click="lockAdmin(dialogData.o_no)" v-show="dialogData.id_status==1">锁定</el-button>
+                     <el-button type="success" @click="unlockUser(dialogData.o_no)" v-show="dialogData.id_status==0">解锁</el-button>
+                     <el-button type="" @click="resetPassword(dialogData.o_no)">重置密码</el-button>
+                     <el-button type="danger" @click="delAdmin(dialogData.o_no)">删除</el-button>                    
                   </div>
 
                </el-form-item>

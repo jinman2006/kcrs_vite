@@ -24,6 +24,14 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 
+const tableColumnArr = ref([
+    {colName:'区域',key:'provinces',width:60},
+    {colName:'名称',key:'ccompany',minwidth:150},
+    {colName:'联系人',key:'ccontact'},
+    {colName:'电话',key:'ctel'},
+    {colName:'职位',key:'cdept'},
+    {colName:'机型',key:'cmodel'},
+])
 
 
 provide('pagination',{
@@ -230,6 +238,7 @@ const handleSearch = () => {
    :firstReportingData ="firstReportingData" 
    :paginationShow="paginationShow"
    :total="total"
+   :tableColumnArr="tableColumnArr"
    @passClick="passClick"
    @rejectClick="rejectClick"
    @resetStatus="resetStatus"
