@@ -6,28 +6,32 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    // isShow:{
-    //     type: Boolean,
-    //     required: true
-    // }
+    isShowReason:{
+        type: Boolean,
+        required: true
+    }
 })
+
+console.log('showreason',props.isShowReason)
 
 const { isShow } = inject('isShow')
 
 const emit = defineEmits(['passClick', 'rejectClick', 'resetStatus'])
-function passClick(){
-    emit('passClick', props.dialogData.value)
+function passClick(data){
+    
+    emit('passClick', data)
 }
-function rejectClick(){
-    emit('rejectClick', props.dialogData.value)
+function rejectClick(data){
+    emit('rejectClick', data)
 }
-function resetStatus(){
-    emit('resetStatus', props.dialogData.value)
+function resetStatus(data){
+    emit('resetStatus', data)
 }
 </script>
 
 <template>
    <div class="">
+        
         <el-dialog v-model="isShow" width='60%'>
             <el-descriptions
                 :column="2"
@@ -63,14 +67,20 @@ function resetStatus(){
                 </el-descriptions-item>
                 <el-descriptions-item>
                     <template #label>报备时间</template>
-                    {{ dialogData.date2 }}
+                    {{ dialogData.date }}
                 </el-descriptions-item>
                 <el-descriptions-item>
                     <template #label>地址</template>
                     {{ dialogData.caddresss }}
                 </el-descriptions-item>
-            </el-descriptions>
 
+            </el-descriptions>
+            <el-descriptions border direction="vertical" v-show="isShowReason">
+                <el-descriptions-item>
+                    <template #label>续报原因</template>
+                    {{ dialogData.delay_reason }}
+                </el-descriptions-item>
+            </el-descriptions>
             <el-descriptions
             class="margin-top"
             direction="vertical"
@@ -78,15 +88,17 @@ function resetStatus(){
             border
             >
                 <el-descriptions-item>
-                        <template #label>状态</template>
-                        <!-- 这个显示方式，参照前面，后面有更好方法时，会更改 -->
-                        <el-tag v-if="dialogData.status === '0'">待审核</el-tag>
-                        <el-tag type="success" v-else-if="dialogData.status === '1'">已通过</el-tag>
-                        <el-tag type="danger" v-else-if="dialogData.status === '2'">已驳回</el-tag>
-                        <el-tag  v-else-if="dialogData.status === '3'">待续审</el-tag>
-                        <el-tag type="success" v-else-if="dialogData.status === '4'">已续期</el-tag>
-                        <el-tag type="danger" v-else-if="dialogData.status === '5'">续驳回</el-tag>
-                        <el-tag type="info" v-else>已结案</el-tag>                       
+                        <template #label>状态: 
+                            <!-- 这个显示方式，参照前面，后面有更好方法时，会更改 -->
+                            <el-text v-if="dialogData.status === '0'">待审核</el-text>
+                            <el-text type="success" v-else-if="dialogData.status === '1'">已通过</el-text>
+                            <el-text type="danger" v-else-if="dialogData.status === '2'">已驳回</el-text>
+                            <el-text  v-else-if="dialogData.status === '3'">待续审</el-text>
+                            <el-text type="success" v-else-if="dialogData.status === '4'">已续期</el-text>
+                            <el-text type="danger" v-else-if="dialogData.status === '5'">续驳回</el-text>
+                            <el-text type="info" v-else-if="dialogData.status === '9'">已结案</el-text>                               
+                        </template>
+                
                     
                 </el-descriptions-item>
                 <el-descriptions-item v-if="dialogData.status === '2'">
@@ -96,6 +108,12 @@ function resetStatus(){
                 <el-descriptions-item v-else-if="dialogData.status === '9'">
                         <template #label>结案原因</template>                  
                         {{ dialogData.close_out }}
+                </el-descriptions-item>
+            </el-descriptions>
+            <el-descriptions border direction="vertical">
+                <el-descriptions-item>
+                    <template #label>报备公司（ <el-text type="primary"> {{ dialogData.o_company }} {{ dialogData.o_contact }} {{ dialogData.o_tel }}</el-text> ）</template>
+                    续服时间：<el-text type="primary">{{ dialogData.date2 }}</el-text>  续报次数：<el-text type="primary"> {{ dialogData.delay_count }}</el-text>  有效期至：<el-text type="primary">{{ dialogData.validity }}</el-text>
                 </el-descriptions-item>
             </el-descriptions>
             <div class="btn_group">

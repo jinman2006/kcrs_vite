@@ -18,6 +18,7 @@ const searchFormRef = ref()
 
 // 列表数据
 const firstReportingData = ref([])
+const selectable = ref()
 
 // 分页数据
 const currentPage = ref(1)
@@ -29,7 +30,7 @@ const tableColumnArr = ref([
     {colName:'名称',key:'ccompany',minwidth:150},
     {colName:'联系人',key:'ccontact'},
     {colName:'电话',key:'ctel'},
-    {colName:'职位',key:'cdept'},
+    {colName:'报备公司 ',key:'o_company'},
     {colName:'原因',key:'delay_reason'},
     {colName:'机型',key:'cmodel'},
 ])
@@ -43,6 +44,7 @@ provide('pagination',{
 
 const paginationShow = ref(true)
 
+const tableType = ref("renewal")
 
 
 // 搜索验证规则
@@ -59,6 +61,7 @@ const searchRules = {
 customer.getCustomerData(currentPage.value, pageSize.value, dataType.value).then( res => {
    console.log('home',res.data)
    firstReportingData.value = res.data
+//    selectable.value = res.selectable
    total.value = res.total
 }).catch( err => {
    console.log('home', err)
@@ -68,9 +71,9 @@ customer.getCustomerData(currentPage.value, pageSize.value, dataType.value).then
 // 审批操作
 const passClick = (row) => {
     // 已经审批通过或驳回的，避免二次操作
-    if('-1 2-'.indexOf(row.status) !== -1){
+    if('-4 5-'.indexOf(row.status) !== -1){
         ElMessage.error('已审批，请勿重复操作')
-        return 
+        return
     }
     ElMessageBox.confirm(
         '确认通过这条信息吗？',
@@ -83,12 +86,12 @@ const passClick = (row) => {
     ).then(() => {
         
         // console.log('dialogdata',firstReportingData.value)
-        
+        console.log(row.id)
         customer.approveCustomer(row.id, 'passed').then((res) => {
             if(res.success){
                 ElMessage.success(res.message)
              
-                row.status='passed'
+                row.status='4'
             }else{
                 ElMessage.error(res.message)
                 return
@@ -104,7 +107,7 @@ const passClick = (row) => {
 
 const rejectClick = (row) => {
     // 已经审批通过或驳回的，避免二次操作
-    if('-1 2-'.indexOf(row.status) !== -1){
+    if('-4 5-'.indexOf(row.status) !== -1){
         ElMessage.error('已审批，请勿重复操作')
         return 
     }
@@ -122,7 +125,7 @@ const rejectClick = (row) => {
         customer.approveCustomer(row.id, 'failed', value).then((res) => {
             if(res.success){
                 ElMessage.success(res.message)
-                row.status='failed'
+                row.status='5'
             }else{
                 ElMessage.error(res.message)
                 return
@@ -153,7 +156,7 @@ const resetStatus = (row) => {
             console.log('rest res',res)
             if(res.success){
                 ElMessage.success(res.message)
-                row.status='pending'
+                row.status='3'
             }else{
                 ElMessage.error(res.message)
                 return
@@ -172,6 +175,7 @@ const handleSizeChange = (val) => {
   currentPage.value = 1
   customer.getCustomerData(currentPage.value, val, dataType.value).then( res => {
    firstReportingData.value = res.data
+//    selectable.value = res.selectable
     }).catch( err => {
         console.log('home', err)
     }) 
@@ -181,6 +185,7 @@ const handleCurrentChange = (val) => {
   console.log(`current page: ${val}`)
   customer.getCustomerData(val, pageSize.value, dataType.value).then( res => {
    firstReportingData.value = res.data
+//    selectable.value = res.selectable
     }).catch( err => {
         console.log('home', err)
     })  
@@ -241,7 +246,7 @@ const handleSearch = () => {
    :paginationShow="paginationShow"
    :total="total"
    :tableColumnArr="tableColumnArr"
-   tabletype="renewal"
+   :tableType="tableType"
    @passClick="passClick"
    @rejectClick="rejectClick"
    @resetStatus="resetStatus"

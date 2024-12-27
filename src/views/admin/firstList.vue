@@ -29,7 +29,7 @@ const tableColumnArr = ref([
     {colName:'名称',key:'ccompany',minwidth:150},
     {colName:'联系人',key:'ccontact'},
     {colName:'电话',key:'ctel'},
-    {colName:'职位',key:'cdept'},
+    {colName:'报备公司',key:'o_company'},
     {colName:'机型',key:'cmodel'},
 ])
 

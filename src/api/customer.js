@@ -10,7 +10,7 @@ const customer = {
     },
     approveCustomer(id, result, reason = '') {
         return request({
-            url: '/api/customer/approve/',
+            url: '/api/customer/approve.php',
             method: 'POST',
             data: { id, result, reason }
         })
@@ -25,6 +25,13 @@ const customer = {
             url: '/api/customer/search.php',
             method: 'POST',
             data: { content, condition, dataType }
+        })
+    },
+    batch_pass(data) {
+        return request({
+            url: '/api/customer/batch_pass.php',
+            method: 'POST',
+            data
         })
     }
 
