@@ -47,6 +47,14 @@ const routes = [
                 path: '/users/user',
                 component: () => import('@/views/admin/userManage.vue')
             },
+            {
+                path: '/users/info',
+                component: () => import('@/views/admin/userInfo.vue')
+            },
+            {
+                path: '/users/password',
+                component: () => import('@/views/admin/changePassword.vue')
+            }
         ]
     },
     {

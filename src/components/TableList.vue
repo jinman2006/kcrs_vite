@@ -5,10 +5,6 @@ import customer from '@/api/customer';
 import { ElMessage } from 'element-plus';
 
 const props = defineProps({
-    firstReportingData:{
-        type: Array,
-        required: true
-    },
     paginationShow:{
         type: Boolean,
         required: true
@@ -40,11 +36,15 @@ function resetStatus(data){
     emit('resetStatus', data)
 }
 function handleCurrentChange( val){
+    console.log('table',val)
     emit('handleCurrentChange', val)
 }
 function handleSizeChange(val){
     emit('handleSizeChange',val)
 }
+
+// 表格数据
+const tableData = inject('tableData')
 
 // 分页数据
 
@@ -117,7 +117,9 @@ const batch_pass = () => {
     customer.batch_pass(select_Id.value).then( res => {
         console.log('batch_pass res',res)
         if(res.success){
+            handleCurrentChange(currentPage.value) //修改成功后，刷新当前面，更新表单
             ElMessage.success(res.message)
+
         }
     }).catch( err => {
         console.log('batch_pass err',err)
@@ -133,7 +135,7 @@ const batch_pass = () => {
             <el-button type="primary" @click="batch_pass">批量通过</el-button>
        </div>
        <el-table 
-            :data="firstReportingData" 
+            :data="tableData" 
             border 
             style="width: 98%;"
             @cell-click="cellClick"

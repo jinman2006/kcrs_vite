@@ -20,11 +20,11 @@ const customer = {
             url: '/api/customer/resetstatus.php?id=' + id,
         })
     },
-    search(content, condition, dataType) {
+    search(content, condition, dataType, scope) {//content 搜索内容，condition 条件,dataType 所在页面类型，在哪个页面搜索（first,renewal,end)
         return request({
             url: '/api/customer/search.php',
             method: 'POST',
-            data: { content, condition, dataType }
+            data: { content, condition, dataType, scope }
         })
     },
     batch_pass(data) {

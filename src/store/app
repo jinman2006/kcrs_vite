@@ -1,0 +1,20 @@
+import { reactive } from "vue"
+import { defineStore } from "pinia"
+
+const useAppStore = defineStore('app', () => {
+    const data = reactive({
+        sidebarOpened: true
+    })
+
+    const save = (sidebarOpened) => {
+        data.sidebarOpened = sidebarOpened
+    }
+
+    return {
+        data,
+        save
+    }
+}
+)
+
+export { useAppStore }

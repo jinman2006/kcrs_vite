@@ -10,13 +10,15 @@ const logout = () => {
    
 }
 
-
+const toggleClick = () => {
+   console.log(11)
+}
 
 </script>
 
 <template>
    <div class="home-container">
-      <div class="sidebar">
+      <div class="sidebar" >
          <div class="logo-container">
             <div class="logo">
                <el-avatar size="small" shape="square" :src="logoImg"></el-avatar>
@@ -32,7 +34,7 @@ const logout = () => {
       </div>
       <div class="main">
          <div class="header">
-            <div class="header-left">
+            <div class="header-left" @click="toggleClick">
                <el-icon :size="22" color="#515151"><Fold /></el-icon>
             </div>
             <div class="header-middle"></div>
@@ -43,12 +45,14 @@ const logout = () => {
                   </div>
                   <template #dropdown>
                      <el-dropdown-menu class="user-dropdown">
-                        <router-link to="/">
-                        <el-dropdown-item>基本信息</el-dropdown-item>
+                        <router-link to="/users/info">
+                           <el-dropdown-item>基本信息</el-dropdown-item>
                         </router-link>
-                        <a target="_blank" href="#">
-                           <el-dropdown-item>修改密码</el-dropdown-item>
-                        </a>
+                        <router-link to="/users/password">
+                           <el-dropdown-item>修改密码</el-dropdown-item> 
+                        </router-link>
+                           
+                        
                         <el-dropdown-item divided @click="logout">退出</el-dropdown-item>
                      </el-dropdown-menu>
                   </template>

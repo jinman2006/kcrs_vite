@@ -72,6 +72,13 @@ const user = {
             data: { o_no: data }
         })
     },
+    changePassword(data) {
+        return request({
+            url: '/api/user/changepassword.php',
+            method: 'POST',
+            data
+        })
+    },
     delUser(data) {
         return request({
             url: "/api/user/deluser.php",

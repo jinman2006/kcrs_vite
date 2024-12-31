@@ -71,7 +71,7 @@ function resetStatus(data){
                 </el-descriptions-item>
                 <el-descriptions-item>
                     <template #label>地址</template>
-                    {{ dialogData.caddresss }}
+                    {{ dialogData.caddress }}
                 </el-descriptions-item>
 
             </el-descriptions>
@@ -90,13 +90,15 @@ function resetStatus(data){
                 <el-descriptions-item>
                         <template #label>状态: 
                             <!-- 这个显示方式，参照前面，后面有更好方法时，会更改 -->
-                            <el-text v-if="dialogData.status === '0'">待审核</el-text>
+                            <el-text type="info" v-if="dialogData.expire">已过期</el-text>   
+                            <el-text v-else-if="dialogData.status === '0'">待审核</el-text>
                             <el-text type="success" v-else-if="dialogData.status === '1'">已通过</el-text>
                             <el-text type="danger" v-else-if="dialogData.status === '2'">已驳回</el-text>
                             <el-text  v-else-if="dialogData.status === '3'">待续审</el-text>
                             <el-text type="success" v-else-if="dialogData.status === '4'">已续期</el-text>
                             <el-text type="danger" v-else-if="dialogData.status === '5'">续驳回</el-text>
-                            <el-text type="info" v-else-if="dialogData.status === '9'">已结案</el-text>                               
+                            <el-text type="info" v-else-if="dialogData.status === '9'">已结案</el-text>   
+
                         </template>
                 
                     
@@ -113,7 +115,10 @@ function resetStatus(data){
             <el-descriptions border direction="vertical">
                 <el-descriptions-item>
                     <template #label>报备公司（ <el-text type="primary"> {{ dialogData.o_company }} {{ dialogData.o_contact }} {{ dialogData.o_tel }}</el-text> ）</template>
-                    续服时间：<el-text type="primary">{{ dialogData.date2 }}</el-text>  续报次数：<el-text type="primary"> {{ dialogData.delay_count }}</el-text>  有效期至：<el-text type="primary">{{ dialogData.validity }}</el-text>
+                    <div v-show="isShowReason">
+                       续报时间：<el-text type="primary">{{ dialogData.date2 }}</el-text>  续报次数：<el-text type="primary"> {{ dialogData.delay_count }}</el-text>  有效期至：<el-text type="primary">{{ dialogData.validity }}</el-text> 
+                    </div>
+                    
                 </el-descriptions-item>
             </el-descriptions>
             <div class="btn_group">

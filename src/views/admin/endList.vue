@@ -4,6 +4,7 @@ import 'element-plus/theme-chalk/display.css'
 import  customer from '@/api/customer.js'
 import { ElMessage, ElMessageBox } from 'element-plus';
 import TableList from '@/components/TableList.vue';
+import TableSearch from '@/components/TableSearch.vue';
 
 // 搜索数据
 const searchComb = reactive({
@@ -17,7 +18,8 @@ const searchBarHeight = ref('60px')
 const searchFormRef = ref()
 
 // 列表数据
-const firstReportingData = ref([])
+const tableData = ref([])
+provide('tableData',tableData)
 
 // 分页数据
 const currentPage = ref(1)
@@ -33,15 +35,13 @@ const tableColumnArr = ref([
     {colName:'机型',key:'cmodel'},
 ])
 
+const paginationShow = ref(true)
 
 provide('pagination',{
     currentPage,
-    pageSize
+    pageSize,
+    paginationShow
 })
-
-const paginationShow = ref(true)
-
-
 
 // 搜索验证规则
 const searchRules = {
@@ -56,7 +56,7 @@ const searchRules = {
 // 获取客户数据
 customer.getCustomerData(currentPage.value, pageSize.value, dataType.value).then( res => {
    console.log('home',res.data)
-   firstReportingData.value = res.data
+   tableData.value = res.data
    total.value = res.total
 }).catch( err => {
    console.log('home', err)
@@ -169,7 +169,7 @@ const handleSizeChange = (val) => {
   pageSize.value = val
   currentPage.value = 1
   customer.getCustomerData(currentPage.value, val, dataType.value).then( res => {
-   firstReportingData.value = res.data
+  tableData.value = res.data
     }).catch( err => {
         console.log('home', err)
     }) 
@@ -178,7 +178,7 @@ const handleSizeChange = (val) => {
 const handleCurrentChange = (val) => {
   console.log(`current page: ${val}`)
   customer.getCustomerData(val, pageSize.value, dataType.value).then( res => {
-   firstReportingData.value = res.data
+  tableData.value = res.data
     }).catch( err => {
         console.log('home', err)
     })  
@@ -196,7 +196,7 @@ const handleSearch = () => {
         .then(res => {
             paginationShow.value = false
             console.log('firstlist res', res)
-            firstReportingData.value = res.data
+            tableData.value = res.data
         }).catch( err => {
             console.log('firstlist err', err)
         })
@@ -207,7 +207,10 @@ const handleSearch = () => {
 
 <template>
    <div class="search-container" >
-        <div class="form">
+        <table-search
+        :dataType="dataType"
+        ></table-search>
+        <!-- <div class="form">
             <el-form 
             :inline="true" 
             :model="searchComb" 
@@ -232,10 +235,9 @@ const handleSearch = () => {
                     <el-button type="primary" @click="handleSearch">搜索</el-button>
                 </el-form-item>
             </el-form>
-        </div>
+        </div> -->
    </div>
    <table-list 
-   :firstReportingData ="firstReportingData" 
    :paginationShow="paginationShow"
    :total="total"
    :tableColumnArr="tableColumnArr"
