@@ -24,7 +24,7 @@ const toggleClick = () => {
                <el-avatar size="small" shape="square" :src="logoImg"></el-avatar>
             </div>
             <div class="logo-text">
-              <h3>KCRS后台管理</h3> 
+              <h4>KCRS后台管理</h4> 
             </div>
          </div>
          <div class="menu-container">
@@ -34,9 +34,9 @@ const toggleClick = () => {
       </div>
       <div class="main">
          <div class="header">
-            <div class="header-left" @click="toggleClick">
+            <!-- <div class="header-left" @click="toggleClick">
                <el-icon :size="22" color="#515151"><Fold /></el-icon>
-            </div>
+            </div> -->
             <div class="header-middle"></div>
             <div class="header-right">
                <el-dropdown trigger="click">

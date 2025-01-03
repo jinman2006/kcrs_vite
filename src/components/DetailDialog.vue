@@ -16,9 +16,10 @@ console.log('showreason',props.isShowReason)
 
 const { isShow } = inject('isShow')
 
+const dataType = inject('dataType')//获取数据表的类型，来源表
+
 const emit = defineEmits(['passClick', 'rejectClick', 'resetStatus'])
 function passClick(data){
-    
     emit('passClick', data)
 }
 function rejectClick(data){
@@ -121,10 +122,10 @@ function resetStatus(data){
                     
                 </el-descriptions-item>
             </el-descriptions>
-            <div class="btn_group">
+            <div class="btn_group" v-show="dataType!='end'">
                 <el-button type="success"  @click="passClick(dialogData)">通过</el-button>
                 <el-button type="danger"  @click="rejectClick(dialogData)">驳回</el-button>
-                <el-button type="primary">结案</el-button>
+                <el-button type="primary" @click="closeClick(dialogData)">结案</el-button>
                 <el-button type="info" @click="resetStatus(dialogData)">重置</el-button>
             </div>
 

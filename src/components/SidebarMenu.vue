@@ -10,7 +10,7 @@ const activeMenu = computed(() => {
    return path
 })
 
-const isCollapse = ref(true)
+const isCollapse = ref(false)
 
 </script>
 
@@ -49,7 +49,14 @@ const isCollapse = ref(true)
           <el-menu-item index="/setting/email">邮箱设置</el-menu-item> 
           <el-menu-item index="/setting/other">其它设置</el-menu-item>   
        </el-sub-menu>
-
+       <el-menu-item index="/sales/addcustomer">
+         <el-icon><Suitcase /></el-icon>
+         <span>客户报备</span>
+       </el-menu-item>
+       <el-menu-item index="/sales/customerlist">
+         <el-icon><Suitcase /></el-icon>
+         <span>客户列表</span>
+       </el-menu-item>
     </el-menu>
  </div>
 </template>

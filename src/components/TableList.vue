@@ -23,13 +23,16 @@ const props = defineProps({
 })
 
 console.log(props.selectable)
+const dataType = inject('dataType')
 
 const emit = defineEmits(['passClick', 'rejectClick', 'resetStatus', 'handleSizeChange', 'handleCurrentChange'])
 function passClick(data){
+    if(dataType.value=='end')return //结案表 按钮不工作
     emit('passClick', data)
 }
 
 function rejectClick(data){
+    if(dataType.value=='end')return //结案表 按钮不工作
     emit('rejectClick', data)
 }
 function resetStatus(data){

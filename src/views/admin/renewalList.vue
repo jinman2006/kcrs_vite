@@ -13,6 +13,7 @@ const searchComb = reactive({
 })
 
 const dataType = ref('renewal')
+provide('dataType',dataType)
 
 const searchBarHeight = ref('60px')
 const searchFormRef = ref()

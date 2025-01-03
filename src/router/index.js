@@ -36,6 +36,20 @@ const routes = [
         ]
     },
     {
+        path: '/sales',
+        component: () => import('@/views/admin/home.vue'),
+        children: [
+            {
+                path: '/sales/addcustomer',
+                component: () => import('@/views/sales/addCustomer.vue')
+            },
+            {
+                path: '/sales/customerlist',
+                component: () => import('@/views/sales/customerList.vue')
+            },
+        ]
+    },
+    {
         path: '/users',
         component: () => import('@/views/admin/home.vue'),
         children: [

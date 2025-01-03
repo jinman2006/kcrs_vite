@@ -8,7 +8,7 @@
     .sidebar {
         // position: fixed;
         width: 200px;
-        // width: 50px;
+        // width: 64px;
         background-color: #fff;
         border-right: 1px solid #d1d3d6;
         // border-right: 1px solid red;
@@ -20,12 +20,14 @@
             align-items: center;
 
             .logo {
-                width: 30px;
+                width: 64px;
                 height: 45px;
                 // padding: 0 10px;
-                padding-left: 15px;
+                // padding-left: 15px;
                 display: flex;
                 align-items: center;
+                justify-content: center;
+
 
                 .el-avatar {
                     background-color: transparent; //透明
