@@ -82,7 +82,7 @@ const agentList = ref([])
 const agentLoadText = ref('获取代理商列表中...')
 const selectChange = value => {
     console.log(value)
-    if(value === '4'){
+    if(value == '4'){
         user.getSaleManagerList().then(res => {
             console.log(res.data)
             saleManagerList.value = res.data
@@ -93,7 +93,7 @@ const selectChange = value => {
         saleManagerShow.value = true
         agentShow.value = false
         console.log('salemanage',saleManagerShow.value)
-    }else if( value === '0'){
+    }else if( value == '0'){
          user.getAgentList().then( res => {
             agentList.value = res.data
             agentLoadText.value = "请选择所属的代理商"

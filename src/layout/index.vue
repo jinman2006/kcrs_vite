@@ -47,7 +47,7 @@ const test = () => {
             <!-- <div class="header-left" @click="toggleClick">
                <el-icon :size="22" color="#515151"><Fold /></el-icon>
             </div> -->
-            <el-button @click="test">test</el-button>
+            <el-button @click="test">test11</el-button>
             <div class="header-middle"></div>
             <div class="header-right">
                <el-dropdown trigger="click">
@@ -81,5 +81,5 @@ const test = () => {
 </template>
 
 <style lang="scss" scoped>
-@use "@/styles/admin/home.scss"
+@use "@/styles/layout/home.scss"
 </style>

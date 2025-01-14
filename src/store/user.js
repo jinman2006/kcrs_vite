@@ -8,11 +8,13 @@ const useUserStore = defineStore('user', () => {
         expireTime: ''
     })
 
+
     const save = (username, token, expireTime) => {
         data.username = username
         data.token = token
         data.expireTime = expireTime
     }
+
 
     return {
         data,

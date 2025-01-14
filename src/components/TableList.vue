@@ -154,13 +154,13 @@ const batch_pass = () => {
             <!-- 状态以标签显示的这种方式，修改时会有明显动作，再没有找到合适解决办法前选用v-if -->
             <template #default="{row}">
               <el-text type="info" v-if="row.expire">已过期</el-text>   
-              <el-text v-else-if="row.status === '0'">待审核</el-text>
-              <el-text type="success" v-else-if="row.status === '1'">已通过</el-text>
-              <el-text type="danger" v-else-if="row.status === '2'">已驳回</el-text>
-              <el-text  v-else-if="row.status === '3'">待续审</el-text>
-              <el-text type="success" v-else-if="row.status === '4'">已续期</el-text>
-              <el-text type="danger" v-else-if="row.status === '5'">续驳回</el-text>
-              <el-text v-else-if="row.status === '9'">已结案</el-text>
+              <el-text v-else-if="row.status == '0'">待审核</el-text>
+              <el-text type="success" v-else-if="row.status == '1'">已通过</el-text>
+              <el-text type="danger" v-else-if="row.status == '2'">已驳回</el-text>
+              <el-text  v-else-if="row.status == '3'">待续审</el-text>
+              <el-text type="success" v-else-if="row.status == '4'">已续期</el-text>
+              <el-text type="danger" v-else-if="row.status == '5'">续驳回</el-text>
+              <el-text v-else-if="row.status == '9'">已结案</el-text>
                    
             </template>
 

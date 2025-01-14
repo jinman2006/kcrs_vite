@@ -230,18 +230,19 @@ const delUser = e => {
             <el-table-column prop="o_tel" label="电话" show-overflow-tooltip/>
             <el-table-column prop="user_permission" label="级别">
                <template #default="{row}">
-                  <el-text v-if="row.user_permission === '0'">办事处</el-text>
-                  <el-text v-else-if="row.user_permission === '2'">代理商</el-text>
-                  <el-text v-else-if="row.user_permission === '3'">销售经理</el-text>
-                  <el-text v-else-if="row.user_permission === '4'">经销商</el-text>
+                  <el-text v-if="row.user_permission == '0'">办事处</el-text>
+                  <el-text v-else-if="row.user_permission == '2'">代理商</el-text>
+                  <el-text v-else-if="row.user_permission == '3'">销售经理</el-text>
+                  <el-text v-else-if="row.user_permission == '4'">经销商</el-text>
                   <el-text v-else>未知</el-text>
                </template>
             </el-table-column>
             <el-table-column prop="id_status" label="状态">
                <template #default="{row}">
-                  <el-text v-if="row.id_status === '1'" type="success" >正常</el-text>
-                  <el-text v-else-if="row.id_status === '0'" type="warning">锁定</el-text>
+                  <el-text v-if="row.id_status == 1 " type="success" >正常</el-text>
+                  <el-text v-else-if="row.id_status == 0 " type="warning">锁定</el-text>
                   <el-text v-else>删除</el-text>
+                  <!-- <el-text>{{ row.id_status }}</el-text> -->
                </template>
             </el-table-column>
             <el-table-column prop="last_date" label="登录时间" show-overflow-tooltip />

@@ -278,8 +278,8 @@ const delAdmin = e => {
 
             <el-table-column prop="id_status" label="状态">
                <template #default="{row}">
-                  <el-text type="success" v-if="row.id_status === '1'">正常</el-text>
-                  <el-text type="warning" v-else-if="row.id_status === '0'">锁定</el-text>
+                  <el-text type="success" v-if="row.id_status == '1'">正常</el-text>
+                  <el-text type="warning" v-else-if="row.id_status == '0'">锁定</el-text>
                   <el-text v-else>删除</el-text>
                </template>
             </el-table-column>

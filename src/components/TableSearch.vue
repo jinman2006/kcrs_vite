@@ -7,6 +7,10 @@ const props = defineProps({
     dataType:{
         type:String,
         required:true
+    },
+    conditions:{
+        type:Array,
+        required:true
     }
 })
 
@@ -14,13 +18,6 @@ const searchFormRef = ref()
 
 const search_scope = ref('this')
 
-const conditions = ref([
-    {optionName:'名称',key:'ccompany'},
-    {optionName:'电话',key:'ctel'},
-    {optionName:'机型',key:'cmodel'},
-    {optionName:'联系人',key:'ccontact'},
-    {optionName:'报备公司',key:'o_company'}
-])
 
 // 搜索数据
 const searchComb = reactive({
@@ -85,11 +82,11 @@ const handleSearch = () => {
                     <el-option v-for="item in conditions" :key="item.key" :label="item.optionName" :value="item.key" />
                 </el-select>
             </el-form-item>
-            <el-form-item>
+            <el-form-item v-show="dataType!='sales'">
                 <el-radio-group v-model="search_scope">
-                <el-radio value="this" size="small">本表</el-radio>
-                <el-radio value="all" size="small">全表</el-radio>
-    </el-radio-group>
+                    <el-radio value="this" size="small">本表</el-radio>
+                    <el-radio value="all" size="small">全表</el-radio>
+                </el-radio-group>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="handleSearch">搜索</el-button>

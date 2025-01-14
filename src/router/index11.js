@@ -1,37 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router"
 import layout from '@/layout/index.vue'
 
-const publicRoutes = [
+const routes = [
 
     {
         path: '/login',
-        component: () => import('@/views/public/login.vue')
-    },
-    {
-        path: '/404',
-        component: () => import('@/views/public/404.vue')
-    },
-    {
-        path: '/401',
-        component: () => import('@/views/public/401.vue')
-    }
-]
-
-const privateRoutes = [
-    {
-        path: '/',
-        component: layout,
-        redirect: '/index',
-        children: [
-            {
-                path: '/index',
-                component: () => import('@/views/public/index.vue')
-            }
-        ]
+        component: () => import('@/views/admin/login.vue')
     },
     {
         path: '/admin',
-        component: layout,
+        component: () => import('@/views/admin/home.vue'),
         children: [
             // 初报查询
             {
@@ -47,12 +25,34 @@ const privateRoutes = [
             {
                 path: '/customer/endlist',
                 component: () => import("@/views/admin/endList.vue")
-            }
+            },
+            {
+                path: '/users',
+                component: () => import('@/views/admin/userManage.vue')
+            },
+            // {
+            //     path: '/setting',
+            //     component: () => import('@/views/admin/setting.vue')
+            // }
+        ]
+    },
+    {
+        path: '/sales',
+        component: () => import('@/views/admin/home.vue'),
+        children: [
+            {
+                path: '/sales/addcustomer',
+                component: () => import('@/views/sales/addCustomer.vue')
+            },
+            {
+                path: '/sales/customerlist',
+                component: () => import('@/views/sales/customerList.vue')
+            },
         ]
     },
     {
         path: '/users',
-        component: layout,
+        component: () => import('@/views/admin/home.vue'),
         children: [
             {
                 path: '/users/manager',
@@ -73,22 +73,8 @@ const privateRoutes = [
         ]
     },
     {
-        path: '/sales',
-        component: layout,
-        children: [
-            {
-                path: '/sales/addcustomer',
-                component: () => import('@/views/sales/addCustomer.vue')
-            },
-            {
-                path: '/sales/customerlist',
-                component: () => import('@/views/sales/customerList.vue')
-            },
-        ]
-    },
-    {
         path: '/setting',
-        component: layout,
+        component: () => import('@/views/admin/home.vue'),
         children: [
             {
                 path: '/setting/notice',
@@ -108,7 +94,7 @@ const privateRoutes = [
 
 const router = createRouter({
     history: createWebHistory(),
-    routes: [...publicRoutes, ...privateRoutes]
+    routes
 })
 
 export default router

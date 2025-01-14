@@ -11,6 +11,14 @@ const searchComb = reactive({
     content:'',
     condition:''
 })
+// 搜索条件
+const searchConditions = ref([
+    {optionName:'名称',key:'ccompany'},
+    {optionName:'电话',key:'ctel'},
+    {optionName:'机型',key:'cmodel'},
+    {optionName:'联系人',key:'ccontact'},
+    {optionName:'报备公司',key:'o_company'}
+])
 
 const dataType = ref('first')
 provide('dataType',dataType)
@@ -214,33 +222,8 @@ const handleSearch = () => {
    <div class="search-container" >
         <table-search
         :dataType="dataType"
+        :conditions="searchConditions"
         ></table-search>
-        <!-- <div class="form">
-            <el-form 
-            :inline="true" 
-            :model="searchComb" 
-            ref="searchFormRef" 
-            :rules="searchRules"
-            hide-required-asterisk
-            >
-                <el-form-item prop="content" label="搜索的内容" >
-                    <el-input v-model="searchComb.content"></el-input>
-                </el-form-item>
-                <el-form-item label="条件" prop="condition">
-                    <el-select
-                        v-model="searchComb.condition"
-                        placeholder="选择搜索的条件"
-                        clearable
-                    >
-                        <el-option label="名称" value="ccompany" />
-                    </el-select>
-                </el-form-item>
-
-                <el-form-item>
-                    <el-button type="primary" @click="handleSearch">搜索</el-button>
-                </el-form-item>
-            </el-form>
-        </div> -->
    </div>
    <table-list 
    :paginationShow="paginationShow"

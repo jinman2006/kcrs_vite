@@ -14,6 +14,20 @@ const sales = {
             method: 'POST',
             data: { userId, currentPage, pageSize }
         })
+    },
+    delayCustomer(id, delayreason) {
+        return request({
+            url: '/api/sales/delaycustomer.php',
+            method: 'POST',
+            data: { id, delayreason }
+        })
+    },
+    deleteCustomer(data) {
+        return request({
+            url: '/api/sales/deletecustomer.php',
+            method: 'POST',
+            data
+        })
     }
 }
 
