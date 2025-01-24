@@ -2,6 +2,9 @@
 import { reactive, ref, inject } from 'vue';
 import { ElMessage } from 'element-plus';
 import customer from '@/api/customer';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const props = defineProps({
     dataType:{
@@ -51,8 +54,14 @@ const handleSearch = () => {
         .then(res => {
             // paginationShow.value = false
             console.log('searchtable res', res)
-            tableData.value = res.data
-            paginationShow.value = false
+            if(res.success && res.code == 200){
+                tableData.value = res.data
+                paginationShow.value = false                
+            }else if(res.code == 408){//token过期，
+                ElMessage.error(res.message)
+                router.push("/login")
+            }
+
         }).catch( err => {
             console.log('firstlist err', err)
         })

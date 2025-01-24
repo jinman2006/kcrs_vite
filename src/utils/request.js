@@ -4,7 +4,12 @@
  * date:2024-11-08
  */
 import axios from 'axios'
+import { useUserStore } from '@/store/user'
+import { ElMessage } from 'element-plus'
+// import { useRouter } from "vue-router";
+import router from "@/router"
 
+const userStore = useUserStore()
 
 
 const axiosInstance = axios.create({
@@ -17,6 +22,11 @@ const axiosInstance = axios.create({
 // 请求拦截器
 axiosInstance.interceptors.request.use(
     config => {
+        if (config.url != '/api/login/') {
+            config.headers.token = userStore.data.token
+            config.headers.username = userStore.data.username
+
+        }
         console.log('request', config)
         // 请求前要做的动作
         return config
@@ -31,6 +41,16 @@ axiosInstance.interceptors.response.use(
     response => {
         // 请求成功后，对响应数据做的处理
         const { data } = response
+
+        if (data.success && data.code == 200) {
+            return data
+        } else if (data.code == 408) {
+            ElMessage.error(data.message + 'here')
+            setTimeout(() => {
+                router.push("/login")
+            }, 2000);
+
+        }
 
         console.log('res', data)
         // 返回的数据是axios.then(res)中接收的数据

@@ -1,5 +1,5 @@
 // 全局路由前置守卫
-import router from './router/index11'
+import router from './router/index'
 import { useUserStore } from './store/user'
 
 let currentTime = Math.floor(Date.now() / 1000) //当前时间

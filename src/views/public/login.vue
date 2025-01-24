@@ -11,7 +11,7 @@
   const router = useRouter()
 
   const formData = reactive({
-    username:'admin',
+    username:'13621891385',
     password:'3588823'
   })
 
@@ -35,6 +35,11 @@
         user.login(formData.username,sha1(formData.password))
         .then(res => {
             if(res.success){
+                if(!res.data.token){
+                    ElMessage.error('系统错误Token')
+                    return false
+                }
+                console.log('res token',res.data.token)
                 ElMessage.success(res.message)
                 // 将token后面的过期时间单独提取出来
                 let resToken = res.data.token

@@ -4,6 +4,9 @@ import sales from '@/api/sales';
 import CustomerList from '@/components/CustomerList.vue';
 import TableSearch from '@/components/TableSearch.vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const user_id = ref('139')//o_no号
 
@@ -62,9 +65,12 @@ provide('tableData',tableData)
 // 获取报备客户列表
 sales.getSalesCustomerList(user_id.value,currentPage.value,pageSize.value).then( res => {
    console.log('getsaleslist',res)
-   if(res.success){
+   if(res.success && res.code == 200){
       tableData.value = res.data
       total.value = res.total
+   }else if(res.code == 408){//token过期，
+        ElMessage.error(res.message + 'ok')
+        router.push("/login")
    }
    
 }).catch( err => {
@@ -105,9 +111,9 @@ const delayClick = row => {
         console.log('value',value)
         sales.delayCustomer(row.id, value).then((res) => {
             if(res.success){
-                // ElMessage.success(res.message)
-                // row.status=3
-                console.log(res)
+                ElMessage.success(res.message)
+                row.status=3
+                // console.log(res)
             }else{
                 ElMessage.error(res.message)
                 return

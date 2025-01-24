@@ -73,7 +73,7 @@ const handleChange = (v) => {
 <template>
    <div class="">
     <el-form ref="customerInfoRef" :model="customerInfo" label-width="auto" style="max-width: 700px" :rules="addCustomerRules">
-                <el-form-item label="客户区域" prop="area">
+                <el-form-item label="设备所在区域" prop="area">
                     <!-- <el-input v-model="customerInfo.area"></el-input> -->
                      <el-cascader
                         placeholder="请选择客户所在区域"
@@ -137,7 +137,7 @@ const handleChange = (v) => {
                         </el-form-item>
                     </el-col>
                 </el-form-item>
-                <el-form-item label="客户地址" prop="caddress">
+                <el-form-item label="设备所在地址" prop="caddress">
                     <el-input v-model="customerInfo.caddress" placeholder="填写客户的具体地址"></el-input>
                 </el-form-item>
                 <el-form-item>
