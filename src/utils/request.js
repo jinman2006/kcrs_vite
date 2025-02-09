@@ -7,7 +7,7 @@ import axios from 'axios'
 import { useUserStore } from '@/store/user'
 import { ElMessage } from 'element-plus'
 // import { useRouter } from "vue-router";
-import router from "@/router"
+import router from "@/router"//直接导入router 而不是使用router = userRouter()
 
 const userStore = useUserStore()
 

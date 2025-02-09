@@ -56,10 +56,10 @@ const test = () => {
                   </div>
                   <template #dropdown>
                      <el-dropdown-menu class="user-dropdown">
-                        <router-link to="/users/info">
-                           <el-dropdown-item>基本信息</el-dropdown-item>
+                        <router-link to="/userinfo">
+                           <el-dropdown-item>基本信息1</el-dropdown-item>
                         </router-link>
-                        <router-link to="/users/password">
+                        <router-link to="/userpassword">
                            <el-dropdown-item>修改密码</el-dropdown-item> 
                         </router-link>
                            

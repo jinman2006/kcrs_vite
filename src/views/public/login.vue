@@ -49,7 +49,7 @@
                 userStore.save(formData.username,resToken,expireTime)
                 
                 // 跳转到后台首页
-                router.push("/admin")
+                router.push("/")
 
                 console.log('time',expireTime)
             }else{

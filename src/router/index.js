@@ -30,22 +30,22 @@ const privateRoutes = [
         ]
     },
     {
-        path: '/admin',
+        path: '/',
         component: layout,
         children: [
             // 初报查询
             {
-                path: '/customer/firstlist',
+                path: '/firstlist',
                 component: () => import("@/views/admin/firstList.vue")
             },
             // 续报查询
             {
-                path: '/customer/renewallist',
+                path: '/renewallist',
                 component: () => import("@/views/admin/renewalList.vue")
             },
             // 结案查询
             {
-                path: '/customer/endlist',
+                path: '/endlist',
                 component: () => import("@/views/admin/endList.vue")
             }
         ]
@@ -55,33 +55,33 @@ const privateRoutes = [
         component: layout,
         children: [
             {
-                path: '/users/manager',
+                path: '/adminmanage',
                 component: () => import('@/views/admin/adminManage.vue')
             },
             {
-                path: '/users/user',
+                path: '/usermanage',
                 component: () => import('@/views/admin/userManage.vue')
             },
             {
-                path: '/users/info',
+                path: '/userinfo',
                 component: () => import('@/views/admin/userInfo.vue')
             },
             {
-                path: '/users/password',
+                path: '/userpassword',
                 component: () => import('@/views/admin/changePassword.vue')
             }
         ]
     },
     {
-        path: '/sales',
+        path: '/',
         component: layout,
         children: [
             {
-                path: '/sales/addcustomer',
+                path: '/addcustomer',
                 component: () => import('@/views/sales/addCustomer.vue')
             },
             {
-                path: '/sales/customerlist',
+                path: '/customerlist',
                 component: () => import('@/views/sales/customerList.vue')
             },
         ]

@@ -20,8 +20,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://api.extroncnc.cn',
-        // target: 'http://api.iblue8.cn',
+        // target: 'http://api.extroncnc.cn',
+        target: 'http://api.iblue8.cn',
         changeOrigin: true
 
       }

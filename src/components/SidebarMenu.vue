@@ -28,17 +28,17 @@ const isCollapse = ref(false)
              <span>报备管理</span>
           </template>
 
-          <el-menu-item index="/customer/firstlist">初报查询</el-menu-item>
-          <el-menu-item index="/customer/renewallist">续报查询</el-menu-item>
-          <el-menu-item index="/customer/endlist">结案查询</el-menu-item>
+          <el-menu-item index="/firstlist">初报查询</el-menu-item>
+          <el-menu-item index="/renewallist">续报查询</el-menu-item>
+          <el-menu-item index="/endlist">结案查询</el-menu-item>
        </el-sub-menu>
        <el-sub-menu index="2">
          <template #title>
             <el-icon><setting /></el-icon>
              <span>用户管理</span>
           </template>   
-          <el-menu-item index="/users/manager">管理员列表</el-menu-item>    
-          <el-menu-item index=/users/user>经销商列表</el-menu-item>  
+          <el-menu-item index="/adminmanage">管理员列表</el-menu-item>    
+          <el-menu-item index=/usermanage>经销商列表</el-menu-item>  
        </el-sub-menu>
        <el-sub-menu index="3">
          <template #title>
@@ -49,11 +49,11 @@ const isCollapse = ref(false)
           <el-menu-item index="/setting/email">邮箱设置</el-menu-item> 
           <el-menu-item index="/setting/other">其它设置</el-menu-item>   
        </el-sub-menu>
-       <el-menu-item index="/sales/addcustomer">
+       <el-menu-item index="/addcustomer">
          <el-icon><Suitcase /></el-icon>
          <span>客户报备</span>
        </el-menu-item>
-       <el-menu-item index="/sales/customerlist">
+       <el-menu-item index="/customerlist">
          <el-icon><Suitcase /></el-icon>
          <span>客户列表</span>
        </el-menu-item>

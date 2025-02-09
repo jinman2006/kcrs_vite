@@ -69,8 +69,8 @@ sales.getSalesCustomerList(user_id.value,currentPage.value,pageSize.value).then(
       tableData.value = res.data
       total.value = res.total
    }else if(res.code == 408){//token过期，
-        ElMessage.error(res.message + 'ok')
-        router.push("/login")
+        // ElMessage.error(res.message + 'ok')
+        // router.push("/login")
    }
    
 }).catch( err => {
