@@ -1,0 +1,15 @@
+{
+    "permissions": [
+        "/firstlist",
+        "/renewallist",
+        "/endlist",
+        "/adminmanage",
+        "/usermanage",
+        "/roles",
+        "/setting/notice",
+        "/setting/email",
+        "/setting/other",
+        "/addcustomer",
+        "/customerlist"
+    ]
+}
