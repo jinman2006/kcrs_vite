@@ -36,6 +36,7 @@ const privateRoutes = [
             // 初报查询
             {
                 path: '/firstlist',
+                name:'firstlist',
                 component: () => import("@/views/admin/firstList.vue"),
                 meta: {
                     title: '初报查询'
@@ -44,6 +45,7 @@ const privateRoutes = [
             // 续报查询
             {
                 path: '/renewallist',
+                name:'renewallist',
                 component: () => import("@/views/admin/renewalList.vue"),
                 meta: {
                     title: '续报查询'
@@ -52,6 +54,7 @@ const privateRoutes = [
             // 结案查询
             {
                 path: '/endlist',
+                name:'endlist',
                 component: () => import("@/views/admin/endList.vue"),
                 meta: {
                     title: '结案查询'
@@ -65,6 +68,7 @@ const privateRoutes = [
         children: [
             {
                 path: '/adminmanage',
+                name:'adminmanage',
                 component: () => import('@/views/admin/adminManage.vue'),
                 meta: {
                     title: '管理员列表'
@@ -72,6 +76,7 @@ const privateRoutes = [
             },
             {
                 path: '/usermanage',
+                name:'usermanage',
                 component: () => import('@/views/admin/userManage.vue'),
                 meta: {
                     title: '经销商列表'
@@ -79,6 +84,7 @@ const privateRoutes = [
             },
             {
                 path: '/roles',
+                name:'roles',
                 component: () => import('@/views/admin/roles.vue'),
                 meta: {
                     title: '角色管理'
@@ -100,6 +106,7 @@ const privateRoutes = [
         children: [
             {
                 path: '/addcustomer',
+                name:'addcustomer',
                 component: () => import('@/views/sales/addCustomer.vue'),
                 meta: {
                     title: '客户报备'
@@ -107,6 +114,7 @@ const privateRoutes = [
             },
             {
                 path: '/customerlist',
+                name:'customerlist',
                 component: () => import('@/views/sales/customerList.vue'),
                 meta: {
                     title: '客户列表'
@@ -120,6 +128,7 @@ const privateRoutes = [
         children: [
             {
                 path: '/setting/notice',
+                name:'notice',
                 component: () => import('@/views/admin/notice.vue'),
                 meta: {
                     title: '公告设置'
@@ -127,6 +136,7 @@ const privateRoutes = [
             },
             {
                 path: '/setting/email',
+                name:'email',
                 component: () => import('@/views/admin/email.vue'),
                 meta: {
                     title: '邮箱设置'
@@ -134,6 +144,7 @@ const privateRoutes = [
             },
             {
                 path: '/setting/other',
+                name:'other',
                 component: () => import('@/views/admin/other.vue'),
                 meta: {
                     title: '其它设置'

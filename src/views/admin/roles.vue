@@ -44,7 +44,7 @@
           </div>
           <div style="border: 1px solid #eee;padding: 10px;">
             <el-checkbox-group v-model="menuPermission" size="large">
-              <el-checkbox v-for="route in filteredRoutes" :key="route.path" :value="route.path">
+              <el-checkbox v-for="route in filteredRoutes" :key="route.path" :value="route.name">
                 {{ route.meta.title }}
               </el-checkbox>
             </el-checkbox-group>
@@ -104,6 +104,11 @@
   const menuPermissionSave = () => {
     console.log(roleID.value)
     console.log(menuPermission.value)
+    role.setRoles(roleID.value,menuPermission.value).then(res => {
+      console.log('setroles res',res)
+    }).catch(err => {
+      console.log('setroles err',err)
+    })
   }
 
 
