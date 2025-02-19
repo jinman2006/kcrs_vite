@@ -68,6 +68,7 @@
   const filteredRoutes = ref([]);
 
   const roleList = ref([])
+  const role
 
   // 在组件挂载时读取并过滤路由表
   onMounted(() => {
@@ -77,10 +78,38 @@
     
     // 过滤出包含 meta 元素的路由
     filteredRoutes.value = allRoutes.filter(route => route.meta && Object.keys(route.meta).length>0);
+    console.log(filteredRoutes.value)
 
     role.getRoles().then(res =>{
-      console.log('getroles res',res)
-      roleList.value = res.data
+      console.log('getroles res',res.data)
+      const {data} = res
+      data.forEach(row => {
+        const titles = []
+        console.log('row',row)
+        // console.log('type',typeof(row.menu_permission))
+          const row_temp = []
+          row_temp.id=row.id
+          row_temp.role_name = row.role_name
+          JSON.parse(row.menu_permission).forEach(permission => {
+          console.log('permission',permission)
+          const matchName = filteredRoutes.value.find(route => route.name === permission)
+          console.log('matchname',matchName)
+          if(matchName){
+            titles.push(matchName.meta.title)
+          }
+        })
+        row_temp.menu_permission=titles.join(',')
+        // console.log('title',titles)
+        // row.menu_permission = titles
+        // console.log('row2',row.menu_permission)
+        console.log('row_temp',row_temp)
+        roleList.value.push(row_temp)
+      })
+
+
+      
+
+      // roleList.value = res.data
 
     }).catch(err => {
       console.log('getroles err',err)
@@ -98,7 +127,8 @@
   const modifyRole = row => {
     isShow.value = true
     roleID.value = row.id
-    console.log(row)
+    menuPermission.value = JSON.parse(row.menu_permission)
+    console.log(JSON.parse(row.menu_permission))
   }
 
   const menuPermissionSave = () => {
