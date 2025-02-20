@@ -26,7 +26,7 @@
 
       >
         <el-table-column prop="role_name" label="角色名称" show-overflow-tooltip />
-        <el-table-column prop="menu_permission" label="角色权限" show-overflow-tooltip />
+        <el-table-column prop="menu_permission_zh" label="角色权限" show-overflow-tooltip />
         <el-table-column label="操作" fixed="right" min-width="90">
           <template #default="{row}">
               <el-button link type="primary" size="small" @click="modifyRole(row)">修改</el-button>
@@ -68,7 +68,7 @@
   const filteredRoutes = ref([]);
 
   const roleList = ref([])
-  const role
+  //const role
 
   // 在组件挂载时读取并过滤路由表
   onMounted(() => {
@@ -89,6 +89,7 @@
         // console.log('type',typeof(row.menu_permission))
           const row_temp = []
           row_temp.id=row.id
+          row_temp.menu_permission = row.menu_permission
           row_temp.role_name = row.role_name
           JSON.parse(row.menu_permission).forEach(permission => {
           console.log('permission',permission)
@@ -98,7 +99,7 @@
             titles.push(matchName.meta.title)
           }
         })
-        row_temp.menu_permission=titles.join(',')
+        row_temp.menu_permission_zh=titles.join(',')
         // console.log('title',titles)
         // row.menu_permission = titles
         // console.log('row2',row.menu_permission)
