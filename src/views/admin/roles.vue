@@ -1,23 +1,12 @@
 <template>
 
-    <el-button type="primary" @click="test">测试</el-button>
     <div class="userlist">
-      <!-- <div>
-        <h1>包含 meta 元素的路由</h1>
-        <ul>
-          <li v-for="route in filteredRoutes" :key="route.path">
-            {{ route.path }} - {{ route.meta.title}}
-            <ul v-if="Object.keys(route.meta).length > 0">
-              <li v-for="(value, key) in route.meta" :key="key">
-                {{ key }}: {{ value }}
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div> -->
-      <!-- <div class="listheader">
-        <el-button type="primary" @click="addRoleShow">新增</el-button>
-      </div> -->
+      <div class="userlistheader">
+        <div class="userlistbtn">
+          <el-button type="primary" @click="addRole">添加角色</el-button>
+        </div>
+      </div>
+      
       <el-table
         :data="roleList"
         border
@@ -25,12 +14,12 @@
   
 
       >
-        <el-table-column prop="role_name" label="角色名称" show-overflow-tooltip />
-        <el-table-column prop="menu_permission_zh" label="角色权限" show-overflow-tooltip />
+        <el-table-column prop="role_name" label="角色名称" min-width="90" show-overflow-tooltip />
+        <el-table-column prop="menu_permission_zh" label="角色权限" min-width="250" show-overflow-tooltip />
         <el-table-column label="操作" fixed="right" min-width="90">
           <template #default="{row}">
-              <el-button link type="primary" size="small" @click="modifyRole(row)">修改</el-button>
-              <el-button link type="danger" size="small" @click="deleteRole(row.id)">删除</el-button>
+              <el-button link type="primary"  size="small" @click="modifyRole(row)">修改</el-button>
+              <el-button link type="danger" v-show="row.role_name != '管理员'" size="small" @click="deleteRole(row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -39,6 +28,13 @@
     <div class="userdetail">
       <el-dialog v-model="isShow" width="60%">
         <div class="detailform">
+          <div class="rolename" v-show="roleID == 0">
+            <div style="margin-bottom: 5px;">
+              <b >角色名称</b>
+            </div>
+            
+            <el-input v-model="roleName" placeholder="请输入角色名称"></el-input>
+          </div>
           <div style="margin-bottom: 5px;">
             <b>请选择菜单权限</b>
           </div>
@@ -51,7 +47,8 @@
           </div>
           <div style="margin-top: 10px;">
             
-            <el-button type="primary" @click="menuPermissionSave">确定</el-button>
+            <el-button type="primary" v-show="roleID" @click="menuPermissionSave">修改</el-button>
+            <el-button type="primary" v-show="!roleID" @click="roleAddSubmit">增加</el-button>
           </div>
         </div>
       </el-dialog>
@@ -63,6 +60,7 @@
   import role from "@/api/role";
 
   import router from '@/router'
+import { ElMessage, ElMessageBox } from "element-plus";
 
   // 定义一个响应式变量来存储过滤后的路由
   const filteredRoutes = ref([]);
@@ -106,10 +104,6 @@
         console.log('row_temp',row_temp)
         roleList.value.push(row_temp)
       })
-
-
-      
-
       // roleList.value = res.data
 
     }).catch(err => {
@@ -122,9 +116,69 @@
   const RoleListData = ref([]);
   
   const isShow = ref(false);
-
   
   const roleID = ref(0)
+  
+  const roleName = ref('')
+  
+  // 删除角色
+  const deleteRole = id => {
+    ElMessageBox.confirm(
+      '此操作将永久删除该角色，是否继续？',
+      '提示',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    ).then(() => {
+      role.delRoles(id).then(res => {
+        if(res.success){
+          ElMessage.success(res.message)
+          location.reload() 
+        }else{
+          ElMessage.error(res.message)
+        }
+        console.log('deleteroles res',res) 
+      }).catch(err => {
+        ElMessage.error(err)
+        console.log('deleteroles err',err)
+      })
+    }).catch(() => {
+      ElMessage.info('已取消删除')
+    });
+  }
+  // 添加角色
+  const addRole = () => {
+    roleID.value = 0
+    menuPermission.value = []
+    isShow.value = true
+  }
+
+  const roleAddSubmit = () => {
+    if(roleName.value == ''){
+      ElMessage.error('请输入角色名称')
+      return
+    }
+    if(menuPermission.value.length == 0){
+      ElMessage.error('请选择角色权限')
+      return 
+    }
+    role.addRoles(roleName.value,menuPermission.value).then(res => {
+      console.log('addroles res',res) 
+      if(res.success){
+        ElMessage.success(res.message)
+        isShow.value = false
+        location.reload() 
+      }else{
+        ElMessage.error(res.message)
+      }
+    }).catch(err => {
+      console.log('addroles err',err)
+      ElMessage.error(err) 
+    })
+  }
+  
   const modifyRole = row => {
     isShow.value = true
     roleID.value = row.id
@@ -134,11 +188,20 @@
 
   const menuPermissionSave = () => {
     console.log(roleID.value)
-    console.log(menuPermission.value)
+    console.log('menupermission',menuPermission.value)
     role.setRoles(roleID.value,menuPermission.value).then(res => {
       console.log('setroles res',res)
+      if(res.success){
+        ElMessage.success(res.message) 
+        isShow.value = false
+        location.reload()
+      }else{
+        ElMessage.error(res.message)
+      }
+      
     }).catch(err => {
       console.log('setroles err',err)
+      ElMessage.error(err)
     })
   }
 
@@ -172,6 +235,11 @@
     align-items: center;
     box-sizing: border-box;
     padding: 20px 0;
+    .userlistheader {
+      width: 98%;
+      height: 40px;
+      display: flex;
+    }
     .listheader {
       width: 100%;
       padding: 10px 20px;
@@ -187,6 +255,9 @@
   }
   .userdetail {
     // padding: 20px;
+    .rolename{
+      margin-bottom: 10px;
+    }
     .detailform {
       margin: 10px;
       box-sizing: border-box;

@@ -228,7 +228,7 @@ const delUser = e => {
             <el-table-column prop="o_company" label="公司" show-overflow-tooltip/>
             <el-table-column prop="o_contact" label="联系人" show-overflow-tooltip/>
             <el-table-column prop="o_tel" label="电话" show-overflow-tooltip/>
-            <el-table-column prop="user_permission" label="级别">
+            <el-table-column prop="user_permission" label="角色">
                <template #default="{row}">
                   <el-text v-if="row.user_permission == '0'">办事处</el-text>
                   <el-text v-else-if="row.user_permission == '2'">代理商</el-text>
