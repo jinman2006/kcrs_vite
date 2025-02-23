@@ -1,7 +1,9 @@
 <script setup>
 import { useUserStore } from '@/store/user';
+import { useRouter } from "vue-router";
 
 const userStore = useUserStore()
+const router = useRouter()
 
 // userStore.getUserInfo('user')
 
@@ -13,7 +15,9 @@ import logoImg from '@/assets/img/logo.png'
 import SidebarMenu from '@/components/SidebarMenu.vue';
 
 const logout = () => {
-   
+   console.log(111)
+   userStore.logout()
+   router.push('/login')   
 }
 
 const toggleClick = () => {
