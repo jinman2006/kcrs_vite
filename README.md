@@ -21,3 +21,5 @@ SET user_permission = CASE
     ELSE user_permission
 END;
 
+
+```roles.vue 186行 结合数据库routes表，考虑修改角色管理数据的组织方式，登录后，获取用户的权限，根据权限，获取对应的路由，然后渲染路由菜单

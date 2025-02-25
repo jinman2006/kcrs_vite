@@ -183,7 +183,8 @@ import { ElMessage, ElMessageBox } from "element-plus";
     isShow.value = true
     roleID.value = row.id
     menuPermission.value = JSON.parse(row.menu_permission)
-    console.log(JSON.parse(row.menu_permission))
+    console.log('menu_permission',row.menu_permission)
+    console.log(JSON.parse(row.menu_permission).join(','))
   }
 
   const menuPermissionSave = () => {
