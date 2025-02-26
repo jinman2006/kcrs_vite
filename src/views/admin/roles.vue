@@ -15,7 +15,7 @@
 
       >
         <el-table-column prop="role_name" label="角色名称" min-width="90" show-overflow-tooltip />
-        <el-table-column prop="menu_permission_zh" label="角色权限" min-width="250" show-overflow-tooltip />
+        <el-table-column prop="role_permission_zh" label="角色权限" min-width="250" show-overflow-tooltip />
         <el-table-column label="操作" fixed="right" min-width="90">
           <template #default="{row}">
               <el-button link type="primary"  size="small" @click="modifyRole(row)">修改</el-button>
@@ -39,7 +39,7 @@
             <b>请选择菜单权限</b>
           </div>
           <div style="border: 1px solid #eee;padding: 10px;">
-            <el-checkbox-group v-model="menuPermission" size="large">
+            <el-checkbox-group v-model="checkboxBindValue" size="large">
               <el-checkbox v-for="route in filteredRoutes" :key="route.path" :value="route.name">
                 {{ route.meta.title }}
               </el-checkbox>
@@ -47,7 +47,7 @@
           </div>
           <div style="margin-top: 10px;">
             
-            <el-button type="primary" v-show="roleID" @click="menuPermissionSave">修改</el-button>
+            <el-button type="primary" v-show="roleID" @click="rolePermissionSave">修改</el-button>
             <el-button type="primary" v-show="!roleID" @click="roleAddSubmit">增加</el-button>
           </div>
         </div>
@@ -65,8 +65,8 @@ import { ElMessage, ElMessageBox } from "element-plus";
   // 定义一个响应式变量来存储过滤后的路由
   const filteredRoutes = ref([]);
 
-  const roleList = ref([])
-  //const role
+  const roleList = ref([])// 角色列表
+  
 
   // 在组件挂载时读取并过滤路由表
   onMounted(() => {
@@ -81,27 +81,31 @@ import { ElMessage, ElMessageBox } from "element-plus";
     role.getRoles().then(res =>{
       console.log('getroles res',res.data)
       const {data} = res
+      // roleList.value = res.data
       data.forEach(row => {
         const titles = []
-        console.log('row',row)
-        // console.log('type',typeof(row.menu_permission))
+      //   console.log('row',row)
+      //   // console.log('type',typeof(row.menu_permission))
           const row_temp = []
           row_temp.id=row.id
-          row_temp.menu_permission = row.menu_permission
+      //     row_temp.menu_permission = row.menu_permission
           row_temp.role_name = row.role_name
-          JSON.parse(row.menu_permission).forEach(permission => {
-          console.log('permission',permission)
+          let arr_role_permission = row.role_permission.split(',')//将字符串转换为数组
+          row_temp.role_permission = arr_role_permission
+          console.log('arr_role_permission',arr_role_permission)
+          arr_role_permission.forEach(permission => {
+        //   console.log('permission',permission)
           const matchName = filteredRoutes.value.find(route => route.name === permission)
-          console.log('matchname',matchName)
-          if(matchName){
-            titles.push(matchName.meta.title)
-          }
-        })
-        row_temp.menu_permission_zh=titles.join(',')
+        //   console.log('matchname',matchName)
+            if(matchName){
+              titles.push(matchName.meta.title)
+            }
+          })
+          row_temp.role_permission_zh=titles.join(',')//角色权限中文
         // console.log('title',titles)
         // row.menu_permission = titles
         // console.log('row2',row.menu_permission)
-        console.log('row_temp',row_temp)
+      //   console.log('row_temp',row_temp)
         roleList.value.push(row_temp)
       })
       // roleList.value = res.data
@@ -111,7 +115,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
     })
   });
 
-  const menuPermission = ref([])
+  const checkboxBindValue = ref([])
   
   const RoleListData = ref([]);
   
@@ -151,19 +155,21 @@ import { ElMessage, ElMessageBox } from "element-plus";
   // 添加角色
   const addRole = () => {
     roleID.value = 0
-    menuPermission.value = []
+    checkboxBindValue.value = []
     isShow.value = true
   }
 
-  const roleAddSubmit = () => {
+  // 添加角色（保存）
+  const roleAddSubmit = () => {  
     if(roleName.value == ''){
       ElMessage.error('请输入角色名称')
       return
     }
-    if(menuPermission.value.length == 0){
+    if(checkboxBindValue.value.length == 0){
       ElMessage.error('请选择角色权限')
       return 
     }
+    // 添加角色
     role.addRoles(roleName.value,menuPermission.value).then(res => {
       console.log('addroles res',res) 
       if(res.success){
@@ -179,18 +185,27 @@ import { ElMessage, ElMessageBox } from "element-plus";
     })
   }
   
+  // 修改角色
   const modifyRole = row => {
     isShow.value = true
     roleID.value = row.id
-    menuPermission.value = JSON.parse(row.menu_permission)
-    console.log('menu_permission',row.menu_permission)
-    console.log(JSON.parse(row.menu_permission).join(','))
+    //将角色权限赋值给checkbox选中项的绑定值 checkboxBindValue
+    checkboxBindValue.value = row.role_permission
+    console.log('role_permission',row.role_permission)
+
+    console.log(JSON.stringify(row.role_permission))
   }
 
-  const menuPermissionSave = () => {
+  // 修改角色权限（保存）
+  const rolePermissionSave = () => {
     console.log(roleID.value)
-    console.log('menupermission',menuPermission.value)
-    role.setRoles(roleID.value,menuPermission.value).then(res => {
+    console.log('checkboxBindValue',menuPermission.value.join(','))
+    if(checkboxBindValue.value.length == 0){
+      ElMessage.error('请选择角色权限')
+      return
+    }
+    let role_permission = menuPermission.value.join(',')//将数组转换为字符串
+    role.setRoles(roleID.value,role_permission).then(res => {
       console.log('setroles res',res)
       if(res.success){
         ElMessage.success(res.message) 
